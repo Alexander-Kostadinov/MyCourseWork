@@ -93,7 +93,7 @@ namespace MyCourseWork
             switch (e.Button)
             {
                 case MouseButtons.Left:
-
+                     
                     Color = Color.Transparent;
 
                     Panel1_Paint(sender,
