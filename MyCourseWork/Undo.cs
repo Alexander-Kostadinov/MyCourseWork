@@ -27,7 +27,7 @@ namespace MyCourseWork
             switch (lastCommand.Name)
             {
                 case "Add":
-                    Shapes.Remove(Shapes.LastOrDefault());
+                    Shapes.Remove(lastCommand.Item);
                     break;
                 case "Fill":
                     var colorToChange = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
