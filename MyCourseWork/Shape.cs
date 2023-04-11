@@ -9,9 +9,9 @@ namespace MyCourseWork
 {
     public abstract class Shape : IDrawable
     {
+        private int id;
         private float x;
         private float y;
-        private int id;
         protected double surface;
         protected double perimeter;
 
@@ -51,10 +51,10 @@ namespace MyCourseWork
             Brush = new SolidBrush(color);
         }
 
+        public abstract bool Contains(Point point);
         public abstract double CalculateSurface();
         public abstract double CalculatePerimeter();
         public abstract void Draw(Graphics graphics, float x, float y, Color color);
         public abstract void Fill(Graphics graphics, float x, float y, Color color);
-        public abstract bool Contains(Point point);
     }
 }

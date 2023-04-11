@@ -20,7 +20,12 @@ namespace MyCourseWork
         public Command Command { get; set; }
         public string ShapeType { get; set; }
         public Color Color { get; set; }
+        public bool IsUndoExecuted { get; set; }
         public int ID { get; set; }
+        public Undo Undo { get; set; }
+        public Redo Redo { get; set; }
+        public Clear Clear { get; set; }
+        public Remove Remove { get; set; }
 
         public Form1()
         {
@@ -34,7 +39,13 @@ namespace MyCourseWork
             Command = new Command();
             ShapeType = string.Empty;
             Color = Color.Transparent;
+            IsUndoExecuted = false;
             ID = 0;
+
+            Undo = new Undo(UndoCommands, RedoCommands, Shapes);
+            Redo = new Redo(UndoCommands, RedoCommands, Shapes);
+            Remove = new Remove(Command, UndoCommands, Shapes, SelectedShapes);
+            Clear = new Clear(UndoCommands, RedoCommands, Shapes, SelectedShapes, MovedShapes);
         }
 
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
@@ -43,13 +54,16 @@ namespace MyCourseWork
             y += panel1.Location.Y;
             ID++;
 
+            Command.Name = "Add";
+
+            IsUndoExecuted = false;
+
             try
             {
                 switch (ShapeType)
                 {
                     case "Circle":
                         var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, Color);
-                        Command.Name = "Add";
                         Command.Item = circle;
                         Shapes.Add(circle);
                         textBox7.Text = circle.Perimeter.ToString();
@@ -58,7 +72,6 @@ namespace MyCourseWork
                     case "Triangle":
                         var triangle = new Triangle(float.Parse(textBox4.Text),
                             float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, Color);
-                        Command.Name = "Add";
                         Command.Item = triangle;
                         Shapes.Add(triangle);
                         textBox7.Text = triangle.Perimeter.ToString();
@@ -67,7 +80,6 @@ namespace MyCourseWork
                     case "Rectangle":
                         var rectangle = new Rectangle(float.Parse(textBox2.Text), 
                             float.Parse(textBox3.Text), x, y, ID, Color);
-                        Command.Name = "Add";
                         Command.Item = rectangle;
                         Shapes.Add(rectangle);
                         textBox7.Text = rectangle.Perimeter.ToString();
@@ -75,6 +87,7 @@ namespace MyCourseWork
                         break;
                 }
 
+                Command.Name = "Add";
                 UndoCommands.Add(Command);
                 Command = new Command();
             }
@@ -93,8 +106,12 @@ namespace MyCourseWork
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                     
+
+                    Command = new Command();
+
                     Color = Color.Transparent;
+
+                    IsUndoExecuted = false;
 
                     Panel1_Paint(sender,
                 new PaintEventArgs(panel1.CreateGraphics(),
@@ -112,6 +129,8 @@ namespace MyCourseWork
                             textBox8.Text = shape.Surface.ToString();
 
                             SelectedShapes.Add(shape);
+
+                            IsUndoExecuted = false;
 
                             break;
                         }
@@ -178,11 +197,20 @@ namespace MyCourseWork
 
             if (confirmResult == DialogResult.Yes)
             {
+                Clear.Execute();
+
+                IsUndoExecuted = false;
+
                 ID = 0;
-                Shapes.Clear();
-                UndoCommands.Clear();
-                RedoCommands.Clear();
-                SelectedShapes.Clear();
+                textBox1.Text = string.Empty;
+                textBox2.Text = string.Empty;
+                textBox3.Text = string.Empty;
+                textBox4.Text = string.Empty;
+                textBox5.Text = string.Empty;
+                textBox6.Text = string.Empty;
+                textBox7.Text = string.Empty;
+                textBox8.Text = string.Empty;
+
                 panel1.CreateGraphics().Clear(DefaultBackColor);
 
                 Refresh();
@@ -191,110 +219,32 @@ namespace MyCourseWork
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var lastCommand = UndoCommands.LastOrDefault();
+            Undo.Execute();
 
-            if (lastCommand == null)
-            {
-                return;
-            }
-
-            switch (lastCommand.Name)
-            {
-                case "Add":
-                    Shapes.Remove(Shapes.LastOrDefault());
-                    break;
-                case "Fill":
-                    var colorToChange = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
-                    if (colorToChange  == null)
-                    {
-                        break;
-                    }
-                    colorToChange.Color = lastCommand.Color;
-                    break;
-                case "Move":
-                    var shapeToMove = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
-                    if (shapeToMove == null)
-                    {
-                        break;
-                    }
-                    shapeToMove.X = lastCommand.X;
-                    shapeToMove.Y = lastCommand.Y;
-                    break;
-                case "Remove":
-                    Shapes.Add(lastCommand.Item);
-                    break;
-                default:
-                    break;
-            }
-
-            UndoCommands.Remove(lastCommand);
-            RedoCommands.Add(lastCommand);
-
+            IsUndoExecuted = true;
+            
             Refresh();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (SelectedShapes.Count > 0)
-            {
-                foreach (var shape in Shapes)
-                {
-                    if (shape == SelectedShapes[SelectedShapes.Count() - 1])
-                    {
-                        Command.Name = "Remove";
-                        Command.Item = shape;
-                        Shapes.Remove(shape);
-                        SelectedShapes.Clear();
-                        UndoCommands.Add(Command);
-                        Command = new Command();
-                        break;
-                    }
-                }
-            }
+            Remove.Execute();
+
+            IsUndoExecuted = false;
 
             Refresh();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var lastCommand = RedoCommands.LastOrDefault();
-
-            if (lastCommand == null)
+            if (IsUndoExecuted == false)
             {
+                RedoCommands.Clear();
+
                 return;
             }
 
-            switch (lastCommand.Name)
-            {
-                case "Add":
-                    Shapes.Add(lastCommand.Item);
-                    break;
-                case "Fill":
-                    var colorToChange = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
-                    if (colorToChange == null)
-                    {
-                        break;
-                    }
-                    colorToChange.Color = lastCommand.Item.Color;
-                    break;
-                case "Move":
-                    var shapeToMove = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
-                    if (shapeToMove == null)
-                    {
-                        break;
-                    }
-                    shapeToMove.X = lastCommand.Item.X;
-                    shapeToMove.Y = lastCommand.Item.Y;
-                    break;
-                case "Remove":
-                   Shapes.Remove(lastCommand.Item);
-                    break;
-                default:
-                    break;
-            }
-
-            UndoCommands.Add(lastCommand);
-            RedoCommands.Remove(lastCommand);
+            Redo.Execute();
 
             Refresh();
         }
@@ -323,14 +273,6 @@ namespace MyCourseWork
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            if (RedoCommands.LastOrDefault() != null)
-            {
-                if (RedoCommands.LastOrDefault().Name == "Remove")
-                {
-                    RedoCommands.RemoveAt(RedoCommands.Count - 1);
-                }
-            }
-
             switch (e.Button)
             {
                 case MouseButtons.Middle:
@@ -344,8 +286,10 @@ namespace MyCourseWork
 
                         if (shape.ID == MovedShapes[MovedShapes.Count() - 1].ID)
                         {
-                            shape.X = e.X;
-                            shape.Y = e.Y + 87;
+                            shape.X = e.X + 1;
+                            shape.Y = e.Y + 88;
+
+                            IsUndoExecuted = false;
 
                             var type = shape.GetType().Name;
 
@@ -391,14 +335,6 @@ namespace MyCourseWork
 
         private void panel1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (RedoCommands.LastOrDefault() != null)
-            {
-                if (RedoCommands.LastOrDefault().Name == "Remove")
-                {
-                    RedoCommands.RemoveAt(RedoCommands.Count - 1);
-                }
-            }
-
             switch (e.Button)
             {
                 case MouseButtons.Right:
@@ -410,6 +346,9 @@ namespace MyCourseWork
                             Command.Name = "Fill";
                             Command.Color = shape.Color;
                             shape.Color = Color;
+
+                            IsUndoExecuted = false;
+
                             var type = shape.GetType().Name;
 
                             switch (type)

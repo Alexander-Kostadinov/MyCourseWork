@@ -68,8 +68,8 @@ namespace MyCourseWork
         public override bool Contains(Point point)
         {
             return
-                X <= point.X && point.X <= X + A &&
-                Y <= point.Y + 87 && point.Y + 87 <= Y + B;
+                X <= point.X + 1 && point.X + 1 <= X + A &&
+                Y <= point.Y + 88 && point.Y + 88 <= Y + B;
         }
     }
 }

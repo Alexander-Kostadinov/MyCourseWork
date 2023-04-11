@@ -147,21 +147,21 @@ namespace MyCourseWork
         {
             var x = X;
             var y = Y;
+            bool result = false;
             var h = 2 * Surface / c;
             var distanceToA = Math.Sqrt(b * b - h * h);
             var distanceToB = Math.Sqrt(a * a - h * h);
             var pointB = new Point((int)(x + distanceToB), (int)(y + h));
             var pointA = new Point((int)(x - distanceToA), (int)(y + h));
-            bool result = false;
-            var diff = pointA.Y - (point.Y + 87);
+            var diff = pointA.Y - (point.Y + 88);
 
             if (pointA.X < X && point.X < X)
             {
-                result = point.Y + 87 <= pointA.Y && point.Y + 87 >= Y && point.X + 25 > pointA.X + diff;
+                result = point.Y + 88 <= pointA.Y && point.Y + 88 >= Y && point.X + 1 > pointA.X + diff;
             }
             else if (pointB.X > X && point.X > X)
             {
-                result = point.Y + 87 <= pointB.Y && point.Y + 87 >= Y && point.X < pointB.X - diff;
+                result = point.Y + 88 <= pointB.Y && point.Y + 88 >= Y && point.X + 1 < pointB.X - diff;
             }
 
             return result;
