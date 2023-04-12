@@ -20,7 +20,6 @@ namespace MyCourseWork
         public Command Command { get; set; }
         public string ShapeType { get; set; }
         public Color Color { get; set; }
-        public bool IsUndoExecuted { get; set; }
         public int ID { get; set; }
         public Undo Undo { get; set; }
         public Redo Redo { get; set; }
@@ -39,7 +38,6 @@ namespace MyCourseWork
             Command = new Command();
             ShapeType = string.Empty;
             Color = Color.Transparent;
-            IsUndoExecuted = false;
             ID = 0;
 
             Undo = new Undo(UndoCommands, RedoCommands, Shapes);
@@ -55,8 +53,6 @@ namespace MyCourseWork
             ID++;
 
             Command.Name = "Add";
-
-            IsUndoExecuted = false;
 
             try
             {
@@ -107,11 +103,11 @@ namespace MyCourseWork
             {
                 case MouseButtons.Left:
 
+                    RedoCommands.Clear();
+
                     Command = new Command();
 
                     Color = Color.Transparent;
-
-                    IsUndoExecuted = false;
 
                     Panel1_Paint(sender,
                 new PaintEventArgs(panel1.CreateGraphics(),
@@ -129,8 +125,6 @@ namespace MyCourseWork
                             textBox8.Text = shape.Surface.ToString();
 
                             SelectedShapes.Add(shape);
-
-                            IsUndoExecuted = false;
 
                             break;
                         }
@@ -199,8 +193,6 @@ namespace MyCourseWork
             {
                 Clear.Execute();
 
-                IsUndoExecuted = false;
-
                 ID = 0;
                 textBox1.Text = string.Empty;
                 textBox2.Text = string.Empty;
@@ -220,8 +212,6 @@ namespace MyCourseWork
         private void button3_Click(object sender, EventArgs e)
         {
             Undo.Execute();
-
-            IsUndoExecuted = true;
             
             Refresh();
         }
@@ -230,20 +220,13 @@ namespace MyCourseWork
         {
             Remove.Execute();
 
-            IsUndoExecuted = false;
+            RedoCommands.Clear();
 
             Refresh();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (IsUndoExecuted == false)
-            {
-                RedoCommands.Clear();
-
-                return;
-            }
-
             Redo.Execute();
 
             Refresh();
@@ -289,8 +272,6 @@ namespace MyCourseWork
                             shape.X = e.X + 1;
                             shape.Y = e.Y + 88;
 
-                            IsUndoExecuted = false;
-
                             var type = shape.GetType().Name;
 
                             switch (type)
@@ -316,6 +297,8 @@ namespace MyCourseWork
                             }
 
                             MovedShapes.Clear();
+
+                            RedoCommands.Clear();
 
                             Command.Name = "Move";
                             UndoCommands.Add(Command);
@@ -347,8 +330,6 @@ namespace MyCourseWork
                             Command.Color = shape.Color;
                             shape.Color = Color;
 
-                            IsUndoExecuted = false;
-
                             var type = shape.GetType().Name;
 
                             switch (type)
@@ -373,6 +354,7 @@ namespace MyCourseWork
                                     break;
                             }
 
+                            RedoCommands.Clear();
                             UndoCommands.Add(Command);
                             Command = new Command();
 
