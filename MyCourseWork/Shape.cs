@@ -54,7 +54,7 @@ namespace MyCourseWork
         public abstract bool Contains(Point point);
         public abstract double CalculateSurface();
         public abstract double CalculatePerimeter();
-        public abstract void Draw(Graphics graphics, float x, float y, Color color);
-        public abstract void Fill(Graphics graphics, float x, float y, Color color);
+        public abstract void Draw(Graphics graphics, float x, float y);
+        public abstract void Fill(Graphics graphics, float x, float y);
     }
 }

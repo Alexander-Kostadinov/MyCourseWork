@@ -43,10 +43,10 @@ namespace MyCourseWork
             return perimeter;
         }
 
-        public override void Draw(Graphics graphics, float x, float y, Color color) 
+        public override void Draw(Graphics graphics, float x, float y) 
             => graphics.DrawEllipse(Pen, x, y, radius, radius);
 
-        public override void Fill(Graphics graphics, float x, float y, Color color) 
+        public override void Fill(Graphics graphics, float x, float y) 
             => graphics.FillEllipse(Brush, x, y, radius, radius);
 
         public override bool Contains(Point point)

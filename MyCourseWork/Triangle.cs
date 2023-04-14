@@ -93,7 +93,7 @@ namespace MyCourseWork
             return perimeter;
         }
 
-        public override void Draw(Graphics graphics, float x, float y , Color color)
+        public override void Draw(Graphics graphics, float x, float y)
         {
             var h = 2 * Surface / c;
             var distanceToA = Math.Sqrt(b * b - h * h);
@@ -118,7 +118,7 @@ namespace MyCourseWork
             graphics.DrawPolygon(Pen, points);
         }
 
-        public override void Fill(Graphics graphics, float x, float y, Color color)
+        public override void Fill(Graphics graphics, float x, float y)
         {
             var h = 2 * Surface / c;
             var distanceToA = Math.Sqrt(b * b - h * h);

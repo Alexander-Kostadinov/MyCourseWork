@@ -20,7 +20,7 @@ namespace MyCourseWork
         double CalculatePerimeter();
 
         bool Contains(Point point);
-        void Draw(Graphics graphics, float x, float y, Color color);
-        void Fill(Graphics graphics, float x, float y, Color color);
+        void Draw(Graphics graphics, float x, float y);
+        void Fill(Graphics graphics, float x, float y);
     }
 }

@@ -59,10 +59,10 @@ namespace MyCourseWork
             return perimeter;
         }
 
-        public override void Draw(Graphics graphics, float x, float y, Color color)
+        public override void Draw(Graphics graphics, float x, float y)
             => graphics.DrawRectangle(Pen, x, y, a, b);
 
-        public override void Fill(Graphics graphics, float x, float y, Color color)
+        public override void Fill(Graphics graphics, float x, float y)
             => graphics.FillRectangle(Brush, x, y, a, b);
 
         public override bool Contains(Point point)

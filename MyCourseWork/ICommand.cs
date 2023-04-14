@@ -8,9 +8,9 @@ namespace MyCourseWork
 {
     public interface ICommand
     {
+        List<IDrawable> Shapes { get; set; }
         List<Command> UndoCommands { get; set; }
         List<Command> RedoCommands { get; set; }
-        List<IDrawable> Shapes { get; set; }
 
         void Execute();
     }

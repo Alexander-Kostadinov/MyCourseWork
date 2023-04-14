@@ -12,15 +12,15 @@ namespace MyCourseWork
 {
     public partial class Form1 : Form
     {
-        public List<IDrawable> Shapes { get; set; }
-        public List<IDrawable> SelectedShapes { get; set; }
-        public List<IDrawable> MovedShapes { get; set; }
-        public List<Command> UndoCommands { get; set; }
-        public List<Command> RedoCommands { get; set; }
-        public Command Command { get; set; }
+        public int ID { get; set; }
         public string ShapeType { get; set; }
         public Color Color { get; set; }
-        public int ID { get; set; }
+        public List<IDrawable> Shapes { get; set; }
+        public List<IDrawable> MovedShapes { get; set; }
+        public List<IDrawable> SelectedShapes { get; set; }
+        public Command Command { get; set; }
+        public List<Command> UndoCommands { get; set; }
+        public List<Command> RedoCommands { get; set; }
         public Undo Undo { get; set; }
         public Redo Redo { get; set; }
         public Clear Clear { get; set; }
@@ -30,19 +30,21 @@ namespace MyCourseWork
         {
             InitializeComponent();
             
-            Shapes = new List<IDrawable>();
-            SelectedShapes = new List<IDrawable>();
-            MovedShapes = new List<IDrawable>();
-            UndoCommands = new List<Command>();
-            RedoCommands = new List<Command>();
-            Command = new Command();
+            ID = 0;
             ShapeType = string.Empty;
             Color = Color.Transparent;
-            ID = 0;
+
+            Shapes = new List<IDrawable>();
+            MovedShapes = new List<IDrawable>();
+            SelectedShapes = new List<IDrawable>();
+
+            Command = new Command();
+            UndoCommands = new List<Command>();
+            RedoCommands = new List<Command>();
 
             Undo = new Undo(UndoCommands, RedoCommands, Shapes);
             Redo = new Redo(UndoCommands, RedoCommands, Shapes);
-            Remove = new Remove(Command, UndoCommands, Shapes, SelectedShapes);
+            Remove = new Remove(UndoCommands, Shapes, SelectedShapes);
             Clear = new Clear(UndoCommands, RedoCommands, Shapes, SelectedShapes, MovedShapes);
         }
 
@@ -51,8 +53,6 @@ namespace MyCourseWork
             x += panel1.Location.X;
             y += panel1.Location.Y;
             ID++;
-
-            Command.Name = "Add";
 
             try
             {
@@ -104,15 +104,13 @@ namespace MyCourseWork
                 case MouseButtons.Left:
 
                     RedoCommands.Clear();
-
-                    Command = new Command();
-
                     Color = Color.Transparent;
 
                     Panel1_Paint(sender,
                 new PaintEventArgs(panel1.CreateGraphics(),
                 new System.Drawing.Rectangle(new Point(panel1.Location.X, panel1.Location.Y),
                 new Size(panel1.Width, panel1.Height))), e.Location.X, e.Location.Y);
+
                     break;
 
                 case MouseButtons.Right:                 
@@ -144,8 +142,8 @@ namespace MyCourseWork
 
             foreach (var shape in Shapes)
             {
-                shape.Draw(e.Graphics, shape.X, shape.Y, shape.Color);
-                shape.Fill(e.Graphics, shape.X, shape.Y, shape.Color);
+                shape.Draw(e.Graphics, shape.X, shape.Y);
+                shape.Fill(e.Graphics, shape.X, shape.Y);
             }
         }
 

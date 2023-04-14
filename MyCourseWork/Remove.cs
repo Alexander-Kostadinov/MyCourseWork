@@ -11,11 +11,11 @@ namespace MyCourseWork
         public Command Command { get; set; }
         public List<IDrawable> SelectedShapes { get; set; }
 
-        public Remove(Command command, List<Command> undoCommands, 
+        public Remove(List<Command> undoCommands, 
             List<IDrawable> shapes, List<IDrawable> selectedShapes)
         {
             Shapes = shapes;
-            Command = command;
+            Command = new Command();
             UndoCommands = undoCommands;
             SelectedShapes = selectedShapes;
         }
@@ -26,11 +26,12 @@ namespace MyCourseWork
             {
                 foreach (var shape in Shapes)
                 {
-                    if (shape == SelectedShapes[SelectedShapes.Count() - 1])
+                    if (shape.ID == SelectedShapes[SelectedShapes.Count() - 1].ID)
                     {
                         Command.Name = "Remove";
                         Command.Item = shape;
                         UndoCommands.Add(Command);
+
                         Command = new Command();
 
                         Shapes.Remove(shape);

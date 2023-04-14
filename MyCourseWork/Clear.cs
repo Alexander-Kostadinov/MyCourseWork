@@ -8,8 +8,8 @@ namespace MyCourseWork
 {
     public class Clear : Command
     {
-        public List<IDrawable> SelectedShapes { get; set; }
         public List<IDrawable> MovedShapes { get; set; }
+        public List<IDrawable> SelectedShapes { get; set; }
 
         public Clear(List<Command> undoCommands, List<Command> redoCommands, 
             List<IDrawable> shapes, List<IDrawable> selectedShapes, List<IDrawable> movedShapes)
