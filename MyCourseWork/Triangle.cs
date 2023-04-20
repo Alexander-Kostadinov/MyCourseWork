@@ -96,21 +96,21 @@ namespace MyCourseWork
         public override void Draw(Graphics graphics, float x, float y)
         {
             var h = 2 * Surface / c;
-            var distanceToA = Math.Sqrt(b * b - h * h);
-            var distanceToB = Math.Sqrt(a * a - h * h);
+            var distanceToA = Math.Sqrt((b * b) - (h * h));
+            var distanceToB = Math.Sqrt((a * a) - (h * h));
             var pointC = new Point((int)x, (int)y);
             var pointA = new Point((int)(x - distanceToA), (int)(y + h));
             var pointB = new Point((int)(x + distanceToB), (int)(y + h));
 
             if (a > c && a > b)
             {
-                pointA.X = (int)(x + distanceToA);
-                pointB.X = (int)(x + c + distanceToA);
+                pointA.X = (int)(X + distanceToA);
+                pointB.X = (int)(pointA.X + c);
             }
-            if (b > c && b > a)
+            else if (b > c && b > a)
             {
-                pointB.X = (int)(x - distanceToB);
-                pointA.X = (int)(x - (c + distanceToB));
+                pointB.X = (int)(X - distanceToB);
+                pointA.X = (int)(pointB.X - c);
             }
 
             var points = new Point[] { pointA, pointB, pointC };
@@ -121,21 +121,21 @@ namespace MyCourseWork
         public override void Fill(Graphics graphics, float x, float y)
         {
             var h = 2 * Surface / c;
-            var distanceToA = Math.Sqrt(b * b - h * h);
-            var distanceToB = Math.Sqrt(a * a - h * h);
+            var distanceToA = Math.Sqrt((b * b) - (h * h));
+            var distanceToB = Math.Sqrt((a * a) - (h * h));
             var pointC = new Point((int)x, (int)y);
             var pointA = new Point((int)(x - distanceToA), (int)(y + h));
             var pointB = new Point((int)(x + distanceToB), (int)(y + h));
 
             if (a > c && a > b)
             {
-                pointA.X = (int)(x + distanceToA);
-                pointB.X = (int)(x + c + distanceToA);
+                pointA.X = (int)(X + distanceToA);
+                pointB.X = (int)(pointA.X + c);
             }
-            if (b > c && b > a)
+            else if (b > c && b > a)
             {
-                pointB.X = (int)(x - distanceToB);
-                pointA.X = (int)(x - (c + distanceToB));
+                pointB.X = (int)(X - distanceToB);
+                pointA.X = (int)(pointB.X - c);
             }
 
             var points = new Point[] { pointA, pointB, pointC };
@@ -145,23 +145,55 @@ namespace MyCourseWork
 
         public override bool Contains(Point point)
         {
-            var x = X;
-            var y = Y;
-            bool result = false;
             var h = 2 * Surface / c;
-            var distanceToA = Math.Sqrt(b * b - h * h);
-            var distanceToB = Math.Sqrt(a * a - h * h);
-            var pointB = new Point((int)(x + distanceToB), (int)(y + h));
-            var pointA = new Point((int)(x - distanceToA), (int)(y + h));
-            var diff = pointA.Y - (point.Y + 88);
+            var distanceToA = Math.Sqrt((b * b) - (h * h));
+            var distanceToB = Math.Sqrt((a * a) - (h * h));
+            var pointA = new Point((int)(X - distanceToA), (int)(Y + h));
+            var pointB = new Point((int)(X + distanceToB), (int)(Y + h));
 
-            if (pointA.X < X && point.X < X)
+            if (a > c && a > b)
             {
-                result = point.Y + 88 <= pointA.Y && point.Y + 88 >= Y && point.X + 1 > pointA.X + diff;
+                pointA.X = (int)(X + distanceToA);
+                pointB.X = (int)(pointA.X + c);
             }
-            else if (pointB.X > X && point.X > X)
+            else if (b > c && b > a)
             {
-                result = point.Y + 88 <= pointB.Y && point.Y + 88 >= Y && point.X + 1 < pointB.X - diff;
+                pointB.X = (int)(X - distanceToB);
+                pointA.X = (int)(pointB.X - c);
+            }
+
+            bool result = false;
+
+            if (point.Y + 88 < pointA.Y && point.Y + 88 > Y)
+            {
+                if (point.X <= X && point.X <= pointB.X)
+                {
+                    var ratio = (X - pointA.X) / h;
+                    var diff = pointA.Y - (point.Y + 88);
+                    result = pointA.X + (diff * ratio) <= point.X;
+                    return result;
+                }
+                else if (point.X >= X && point.X >= pointA.X)
+                {
+                    var ratio = (pointB.X - X) / h;
+                    var diff = pointB.Y - (point.Y + 88);
+                    result = pointB.X - (diff * ratio) >= point.X;
+                    return result;
+                }
+                else if (point.X <= pointA.X && X <= point.X && X <= pointA.X)
+                {
+                    var ratio = (pointA.X - X) / h;
+                    var diff = (point.Y + 88) - Y;
+                    result = X + (diff * ratio) <= point.X;
+                    return result;
+                }
+                else if (point.X >= pointB.X && X >= point.X && X >= pointB.X)
+                {
+                    var ratio = (X - pointB.X) / h;
+                    var diff = (point.Y + 88) - Y;
+                    result = X - (diff * ratio) >= point.X;
+                    return result;
+                }
             }
 
             return result;

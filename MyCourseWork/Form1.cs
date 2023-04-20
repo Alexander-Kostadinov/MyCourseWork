@@ -44,8 +44,8 @@ namespace MyCourseWork
 
             Undo = new Undo(UndoCommands, RedoCommands, Shapes);
             Redo = new Redo(UndoCommands, RedoCommands, Shapes);
-            Remove = new Remove(UndoCommands, Shapes, SelectedShapes);
-            Clear = new Clear(UndoCommands, RedoCommands, Shapes, SelectedShapes, MovedShapes);
+            Clear = new Clear(UndoCommands, RedoCommands, Shapes);
+            Remove = new Remove(UndoCommands, RedoCommands, Shapes, SelectedShapes);
         }
 
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
@@ -113,20 +113,16 @@ namespace MyCourseWork
 
                     break;
 
-                case MouseButtons.Right:                 
+                case MouseButtons.Right:
 
                     foreach (var shape in Shapes)
                     {
                         if(shape.Contains(e.Location))
                         {
-                            textBox7.Text = shape.Perimeter.ToString();
-                            textBox8.Text = shape.Surface.ToString();
-
                             SelectedShapes.Add(shape);
-
-                            break;
                         }
                     }
+
                 break;
 
                 default:
@@ -201,6 +197,7 @@ namespace MyCourseWork
                 textBox7.Text = string.Empty;
                 textBox8.Text = string.Empty;
 
+                SelectedShapes.Clear();
                 panel1.CreateGraphics().Clear(DefaultBackColor);
 
                 Refresh();
@@ -217,8 +214,6 @@ namespace MyCourseWork
         private void button4_Click(object sender, EventArgs e)
         {
             Remove.Execute();
-
-            RedoCommands.Clear();
 
             Refresh();
         }
@@ -286,7 +281,7 @@ namespace MyCourseWork
                                     break;
                                 case "Triangle":
                                     var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                                        float.Parse(textBox6.Text), float.Parse(textBox6.Text),
+                                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
                                         shape.X, shape.Y, shape.ID, shape.Color);
                                     Command.Item = cloneTriangle;
                                     break;
@@ -320,9 +315,24 @@ namespace MyCourseWork
             {
                 case MouseButtons.Right:
 
+                    SelectedShapes.Clear();
+
                     foreach (var shape in Shapes)
                     {
                         if (shape.Contains(e.Location))
+                        {
+                            SelectedShapes.Add(shape);
+                        }
+                    }
+
+                    if (SelectedShapes.Count < 1)
+                    {
+                        return;
+                    }
+
+                    foreach (var shape in Shapes)
+                    {
+                        if (shape.ID == SelectedShapes[SelectedShapes.Count() - 1].ID)
                         {
                             Command.Name = "Fill";
                             Command.Color = shape.Color;
@@ -344,7 +354,7 @@ namespace MyCourseWork
                                     break;
                                 case "Triangle":
                                     var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                                        float.Parse(textBox6.Text), float.Parse(textBox6.Text),
+                                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
                                         shape.X, shape.Y, shape.ID, shape.Color);
                                     Command.Item = cloneTriangle;
                                     break;
@@ -359,6 +369,9 @@ namespace MyCourseWork
                             break;
                         }
                     }
+
+                    SelectedShapes.Clear();
+
                     break;
 
                 default:

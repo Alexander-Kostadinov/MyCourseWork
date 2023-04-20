@@ -205,9 +205,9 @@ namespace MyCourseWork
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(1, 108);
+            this.panel1.Location = new System.Drawing.Point(0, 108);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(796, 341);
+            this.panel1.Size = new System.Drawing.Size(800, 342);
             this.panel1.TabIndex = 17;
             this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.StartUp);
             this.panel1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDoubleClick);
@@ -241,7 +241,7 @@ namespace MyCourseWork
             this.pictureBox1.BackColor = System.Drawing.Color.Red;
             this.pictureBox1.Location = new System.Drawing.Point(59, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(61, 48);
+            this.pictureBox1.Size = new System.Drawing.Size(60, 48);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
@@ -249,9 +249,9 @@ namespace MyCourseWork
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.Green;
-            this.pictureBox2.Location = new System.Drawing.Point(120, 0);
+            this.pictureBox2.Location = new System.Drawing.Point(115, 0);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(59, 50);
+            this.pictureBox2.Size = new System.Drawing.Size(62, 50);
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
@@ -378,6 +378,7 @@ namespace MyCourseWork
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label12);
@@ -408,6 +409,8 @@ namespace MyCourseWork
             this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
+            this.ForeColor = System.Drawing.SystemColors.Desktop;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Form1";
             this.Text = "Form1";
             this.panel2.ResumeLayout(false);
