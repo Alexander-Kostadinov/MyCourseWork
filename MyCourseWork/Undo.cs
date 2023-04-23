@@ -31,31 +31,37 @@ namespace MyCourseWork
                     break;
                 case "Fill":
                     var colorToChange = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
+
                     if (colorToChange == null)
                     {
                         break;
                     }
+
                     colorToChange.Color = lastCommand.Color;
                     break;
+
                 case "Move":
                     var shapeToMove = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
+
                     if (shapeToMove == null)
                     {
                         break;
                     }
+
                     shapeToMove.X = lastCommand.X;
                     shapeToMove.Y = lastCommand.Y;
                     break;
+
                 case "Remove":
                     Shapes.Add(lastCommand.Item);
                     break;
+
                 default:
                     break;
             }
 
             RedoCommands.Add(lastCommand);
             UndoCommands.Remove(lastCommand);
-        }
-            
+        }     
     }
 }

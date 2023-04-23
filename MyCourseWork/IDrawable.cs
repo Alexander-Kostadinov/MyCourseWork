@@ -15,6 +15,7 @@ namespace MyCourseWork
         double Surface { get; }
         double Perimeter { get; }
         Color Color { get; set; }
+        Pen Pen { get; set; }
 
         double CalculateSurface();
         double CalculatePerimeter();

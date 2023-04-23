@@ -13,14 +13,15 @@ namespace MyCourseWork
     public partial class Form1 : Form
     {
         public int ID { get; set; }
-        public string ShapeType { get; set; }
         public Color Color { get; set; }
+        public string ShapeType { get; set; }
+
         public List<IDrawable> Shapes { get; set; }
-        public List<IDrawable> MovedShapes { get; set; }
-        public List<IDrawable> SelectedShapes { get; set; }
+
         public Command Command { get; set; }
         public List<Command> UndoCommands { get; set; }
         public List<Command> RedoCommands { get; set; }
+
         public Undo Undo { get; set; }
         public Redo Redo { get; set; }
         public Clear Clear { get; set; }
@@ -35,8 +36,6 @@ namespace MyCourseWork
             Color = Color.Transparent;
 
             Shapes = new List<IDrawable>();
-            MovedShapes = new List<IDrawable>();
-            SelectedShapes = new List<IDrawable>();
 
             Command = new Command();
             UndoCommands = new List<Command>();
@@ -45,12 +44,11 @@ namespace MyCourseWork
             Undo = new Undo(UndoCommands, RedoCommands, Shapes);
             Redo = new Redo(UndoCommands, RedoCommands, Shapes);
             Clear = new Clear(UndoCommands, RedoCommands, Shapes);
-            Remove = new Remove(UndoCommands, RedoCommands, Shapes, SelectedShapes);
+            Remove = new Remove(UndoCommands, RedoCommands, Shapes);
         }
 
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
         {
-            x += panel1.Location.X;
             y += panel1.Location.Y;
             ID++;
 
@@ -115,15 +113,36 @@ namespace MyCourseWork
 
                 case MouseButtons.Right:
 
+                    if (Shapes.Count == 0)
+                    {
+                        return;
+                    }
+
+                    var selected = Shapes.Where(x => x.Contains(e.Location)).LastOrDefault();
+
+                    if (selected == null)
+                    {
+                        return;
+                    }
+
                     foreach (var shape in Shapes)
                     {
-                        if(shape.Contains(e.Location))
+                        if (shape.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash && shape.ID != selected.ID)
                         {
-                            SelectedShapes.Add(shape);
+                            shape.Pen = new Pen(Color.Black, 2);
+                            break;
                         }
                     }
 
-                break;
+                    if (selected.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash)
+                    {
+                        selected.Pen = new Pen(Color.Black, 2);
+                    }
+                    else
+                    {
+                        selected.Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                    }
+                    break;
 
                 default:
                     break;
@@ -161,21 +180,29 @@ namespace MyCourseWork
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             Color = Color.Red;
+            FillShape();
+            Refresh();
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
             Color = Color.Green;
+            FillShape();
+            Refresh();
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
             Color = Color.Blue;
+            FillShape();
+            Refresh();
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
         {
             Color = Color.Yellow;
+            FillShape();
+            Refresh();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -197,7 +224,6 @@ namespace MyCourseWork
                 textBox7.Text = string.Empty;
                 textBox8.Text = string.Empty;
 
-                SelectedShapes.Clear();
                 panel1.CreateGraphics().Clear(DefaultBackColor);
 
                 Refresh();
@@ -206,22 +232,19 @@ namespace MyCourseWork
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Undo.Execute();
-            
+            Undo.Execute();       
             Refresh();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             Remove.Execute();
-
             Refresh();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             Redo.Execute();
-
             Refresh();
         }
 
@@ -231,15 +254,17 @@ namespace MyCourseWork
             {
                 case MouseButtons.Middle:
 
-                    foreach (var shape in Shapes)
+                    var selected = Shapes.Where(x => x.Contains(e.Location)).LastOrDefault();
+
+                    if (selected == null)
                     {
-                        if (shape.Contains(e.Location))
-                        {
-                            MovedShapes.Add(shape);
-                            Command.X = (int)shape.X;
-                            Command.Y = (int)shape.Y;
-                        }
+                        return;
                     }
+
+                    selected.ID *= -1;
+
+                    Command.X = (int)selected.X;
+                    Command.Y = (int)selected.Y;
                     break;
 
                 default:
@@ -253,53 +278,46 @@ namespace MyCourseWork
             {
                 case MouseButtons.Middle:
 
-                    foreach (var shape in Shapes)
+                    var selected = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+
+                    if (selected == null)
                     {
-                        if (MovedShapes.Count < 1)
-                        {
-                            return;
-                        }
-
-                        if (shape.ID == MovedShapes[MovedShapes.Count() - 1].ID)
-                        {
-                            shape.X = e.X + 1;
-                            shape.Y = e.Y + 88;
-
-                            var type = shape.GetType().Name;
-
-                            switch (type)
-                            {
-                                case "Circle":
-                                    var cloneCircle = new Circle(float.Parse(textBox1.Text),
-                                        shape.X, shape.Y, shape.ID, shape.Color);
-                                    Command.Item = cloneCircle;
-                                    break;
-                                case "Rectangle":
-                                    var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
-                                        float.Parse(textBox3.Text), shape.X, shape.Y, shape.ID, shape.Color);
-                                    Command.Item = cloneRectangle;
-                                    break;
-                                case "Triangle":
-                                    var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
-                                        shape.X, shape.Y, shape.ID, shape.Color);
-                                    Command.Item = cloneTriangle;
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            MovedShapes.Clear();
-
-                            RedoCommands.Clear();
-
-                            Command.Name = "Move";
-                            UndoCommands.Add(Command);
-                            Command = new Command();
-
-                            break;
-                        }
+                        return;
                     }
+
+                    selected.ID *= -1;
+                    selected.X = e.X + 1;
+                    selected.Y = e.Y + 88;
+
+                    var type = selected.GetType().Name;
+
+                    switch (type)
+                    {
+                        case "Circle":
+                            var cloneCircle = new Circle(float.Parse(textBox1.Text),
+                                selected.X, selected.Y, selected.ID, selected.Color);
+                            Command.Item = cloneCircle;
+                            break;
+                        case "Rectangle":
+                            var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
+                                float.Parse(textBox3.Text), selected.X, selected.Y, selected.ID, selected.Color);
+                            Command.Item = cloneRectangle;
+                            break;
+                        case "Triangle":
+                            var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
+                                float.Parse(textBox6.Text), float.Parse(textBox5.Text),
+                                selected.X, selected.Y, selected.ID, selected.Color);
+                            Command.Item = cloneTriangle;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    RedoCommands.Clear();
+
+                    Command.Name = "Move";
+                    UndoCommands.Add(Command);
+                    Command = new Command();
                     break;
 
                 default:
@@ -309,76 +327,47 @@ namespace MyCourseWork
             Refresh();
         }
 
-        private void panel1_MouseDoubleClick(object sender, MouseEventArgs e)
+        public void FillShape()
         {
-            switch (e.Button)
+            var selected = Shapes.Where
+                (x => x.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash).FirstOrDefault();
+
+            if (selected == null)
             {
-                case MouseButtons.Right:
+                return;
+            }
 
-                    SelectedShapes.Clear();
+            Command.Name = "Fill";
+            Command.Color = selected.Color;
+            selected.Color = Color;
 
-                    foreach (var shape in Shapes)
-                    {
-                        if (shape.Contains(e.Location))
-                        {
-                            SelectedShapes.Add(shape);
-                        }
-                    }
+            var type = selected.GetType().Name;
 
-                    if (SelectedShapes.Count < 1)
-                    {
-                        return;
-                    }
-
-                    foreach (var shape in Shapes)
-                    {
-                        if (shape.ID == SelectedShapes[SelectedShapes.Count() - 1].ID)
-                        {
-                            Command.Name = "Fill";
-                            Command.Color = shape.Color;
-                            shape.Color = Color;
-
-                            var type = shape.GetType().Name;
-
-                            switch (type)
-                            {
-                                case "Circle":
-                                    var cloneCircle = new Circle(float.Parse(textBox1.Text),
-                                        shape.X, shape.Y, shape.ID, shape.Color);
-                                    Command.Item = cloneCircle;
-                                    break;
-                                case "Rectangle":
-                                    var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
-                                        float.Parse(textBox3.Text), shape.X, shape.Y, shape.ID, shape.Color);
-                                    Command.Item = cloneRectangle;
-                                    break;
-                                case "Triangle":
-                                    var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
-                                        shape.X, shape.Y, shape.ID, shape.Color);
-                                    Command.Item = cloneTriangle;
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            RedoCommands.Clear();
-                            UndoCommands.Add(Command);
-                            Command = new Command();
-
-                            break;
-                        }
-                    }
-
-                    SelectedShapes.Clear();
-
+            switch (type)
+            {
+                case "Circle":
+                    var cloneCircle = new Circle(float.Parse(textBox1.Text),
+                        selected.X, selected.Y, selected.ID, selected.Color);
+                    Command.Item = cloneCircle;
                     break;
-
+                case "Rectangle":
+                    var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
+                        float.Parse(textBox3.Text), selected.X, selected.Y, selected.ID, selected.Color);
+                    Command.Item = cloneRectangle;
+                    break;
+                case "Triangle":
+                    var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
+                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
+                        selected.X, selected.Y, selected.ID, selected.Color);
+                    Command.Item = cloneTriangle;
+                    break;
                 default:
                     break;
             }
 
-            Color = Color.Transparent;
+            RedoCommands.Clear();
+            UndoCommands.Add(Command);
+            Command = new Command();
         }
     }
 }

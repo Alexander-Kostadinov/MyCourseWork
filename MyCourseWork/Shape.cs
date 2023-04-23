@@ -15,8 +15,9 @@ namespace MyCourseWork
         protected double surface;
         protected double perimeter;
 
-        protected Pen Pen { get; }
+        public Pen Pen { get; set; }
         protected SolidBrush Brush { get; }
+
         public float X
         {
             get => x;
@@ -51,9 +52,9 @@ namespace MyCourseWork
             Brush = new SolidBrush(color);
         }
 
-        public abstract bool Contains(Point point);
         public abstract double CalculateSurface();
         public abstract double CalculatePerimeter();
+        public abstract bool Contains(Point point);
         public abstract void Draw(Graphics graphics, float x, float y);
         public abstract void Fill(Graphics graphics, float x, float y);
     }

@@ -210,7 +210,6 @@ namespace MyCourseWork
             this.panel1.Size = new System.Drawing.Size(800, 342);
             this.panel1.TabIndex = 17;
             this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.StartUp);
-            this.panel1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDoubleClick);
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
             this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseUp);
             // 

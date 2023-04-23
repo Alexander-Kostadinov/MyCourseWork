@@ -166,32 +166,36 @@ namespace MyCourseWork
 
             if (point.Y + 88 < pointA.Y && point.Y + 88 > Y)
             {
-                if (point.X <= X && point.X <= pointB.X)
+                if (point.X <= X)
                 {
                     var ratio = (X - pointA.X) / h;
                     var diff = pointA.Y - (point.Y + 88);
                     result = pointA.X + (diff * ratio) <= point.X;
+
+                    if (result && pointB.X < X)
+                    {
+                        var diff2 = (point.Y + 88) - Y;
+                        var ratio2 = (X - pointB.X) / h;
+                        result = X - (diff2 * ratio2) >= point.X;
+                        return result;
+                    }
+
                     return result;
                 }
-                else if (point.X >= X && point.X >= pointA.X)
+                else if (point.X >= X)
                 {
                     var ratio = (pointB.X - X) / h;
                     var diff = pointB.Y - (point.Y + 88);
                     result = pointB.X - (diff * ratio) >= point.X;
-                    return result;
-                }
-                else if (point.X <= pointA.X && X <= point.X && X <= pointA.X)
-                {
-                    var ratio = (pointA.X - X) / h;
-                    var diff = (point.Y + 88) - Y;
-                    result = X + (diff * ratio) <= point.X;
-                    return result;
-                }
-                else if (point.X >= pointB.X && X >= point.X && X >= pointB.X)
-                {
-                    var ratio = (X - pointB.X) / h;
-                    var diff = (point.Y + 88) - Y;
-                    result = X - (diff * ratio) >= point.X;
+
+                    if (result && pointA.X > X)
+                    {
+                        var diff2 = (point.Y + 88) - Y;
+                        var ratio2 = (pointA.X - X) / h;
+                        result = X + (diff2 * ratio2) <= point.X;
+                        return result;
+                    }
+
                     return result;
                 }
             }

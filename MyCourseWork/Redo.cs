@@ -31,18 +31,22 @@ namespace MyCourseWork
                     break;
                 case "Fill":
                     var colorToChange = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
+
                     if (colorToChange == null)
                     {
                         break;
                     }
+
                     colorToChange.Color = lastCommand.Item.Color;
                     break;
                 case "Move":
                     var shapeToMove = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
+
                     if (shapeToMove == null)
                     {
                         break;
                     }
+
                     shapeToMove.X = lastCommand.Item.X;
                     shapeToMove.Y = lastCommand.Item.Y;
                     break;

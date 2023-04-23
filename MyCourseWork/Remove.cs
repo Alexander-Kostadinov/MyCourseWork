@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,41 +10,41 @@ namespace MyCourseWork
     public class Remove : Command
     {
         public Command Command { get; set; }
-        public List<IDrawable> SelectedShapes { get; set; }
 
         public Remove(List<Command> undoCommands, List<Command> redoCommands,
-            List<IDrawable> shapes, List<IDrawable> selectedShapes)
+            List<IDrawable> shapes)
         {
             Shapes = shapes;
             Command = new Command();
             UndoCommands = undoCommands;
             RedoCommands = redoCommands;
-            SelectedShapes = selectedShapes;
         }
 
         public override void Execute()
         {
-            if (SelectedShapes.Count > 0)
+            if (Shapes.Count == 0)
             {
-                foreach (var shape in Shapes)
-                {
-                    if (shape.ID == SelectedShapes[SelectedShapes.Count() - 1].ID)
-                    {
-                        Command.Name = "Remove";
-                        Command.Item = shape;
+                return;
+            }
 
-                        RedoCommands.Clear();
-                        UndoCommands.Add(Command);
+            var selected = Shapes.Where(x => x.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash).FirstOrDefault();
 
-                        Command = new Command();
+            if (selected == null)
+            {
+                return;
+            }
 
-                        Shapes.Remove(shape);
-                        SelectedShapes.Clear();
+            selected.Pen = new Pen(Color.Black, 2);
 
-                        break;
-                    }
-                }
-            }  
+            Command.Name = "Remove";
+            Command.Item = selected;
+
+            RedoCommands.Clear();
+            UndoCommands.Add(Command);
+
+            Command = new Command();
+
+            Shapes.Remove(selected);
         }
     }
 }
