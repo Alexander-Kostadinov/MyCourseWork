@@ -102,6 +102,7 @@ namespace MyCourseWork
                 case MouseButtons.Left:
 
                     RedoCommands.Clear();
+
                     Color = Color.Transparent;
 
                     Panel1_Paint(sender,
@@ -175,34 +176,6 @@ namespace MyCourseWork
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             ShapeType = "Triangle";
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            Color = Color.Red;
-            FillShape();
-            Refresh();
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            Color = Color.Green;
-            FillShape();
-            Refresh();
-        }
-
-        private void pictureBox3_Click(object sender, EventArgs e)
-        {
-            Color = Color.Blue;
-            FillShape();
-            Refresh();
-        }
-
-        private void pictureBox4_Click(object sender, EventArgs e)
-        {
-            Color = Color.Yellow;
-            FillShape();
-            Refresh();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -368,6 +341,16 @@ namespace MyCourseWork
             RedoCommands.Clear();
             UndoCommands.Add(Command);
             Command = new Command();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Color = colorDialog1.Color;
+                FillShape();
+                Refresh();
+            }
         }
     }
 }
