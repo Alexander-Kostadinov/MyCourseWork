@@ -13,7 +13,6 @@ namespace MyCourseWork
     public partial class Form1 : Form
     {
         public int ID { get; set; }
-        public Color Color { get; set; }
         public string ShapeType { get; set; }
 
         public List<IDrawable> Shapes { get; set; }
@@ -30,10 +29,9 @@ namespace MyCourseWork
         public Form1()
         {
             InitializeComponent();
-            
+
             ID = 0;
             ShapeType = string.Empty;
-            Color = Color.Transparent;
 
             Shapes = new List<IDrawable>();
 
@@ -57,7 +55,7 @@ namespace MyCourseWork
                 switch (ShapeType)
                 {
                     case "Circle":
-                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, Color);
+                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, flowLayoutPanel1.BackColor);
                         Command.Item = circle;
                         Shapes.Add(circle);
                         textBox7.Text = circle.Perimeter.ToString();
@@ -65,15 +63,15 @@ namespace MyCourseWork
                         break;
                     case "Triangle":
                         var triangle = new Triangle(float.Parse(textBox4.Text),
-                            float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, Color);
+                            float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, flowLayoutPanel1.BackColor);
                         Command.Item = triangle;
                         Shapes.Add(triangle);
                         textBox7.Text = triangle.Perimeter.ToString();
                         textBox8.Text = triangle.Surface.ToString();
                         break;
                     case "Rectangle":
-                        var rectangle = new Rectangle(float.Parse(textBox2.Text), 
-                            float.Parse(textBox3.Text), x, y, ID, Color);
+                        var rectangle = new Rectangle(float.Parse(textBox2.Text),
+                            float.Parse(textBox3.Text), x, y, ID, flowLayoutPanel1.BackColor);
                         Command.Item = rectangle;
                         Shapes.Add(rectangle);
                         textBox7.Text = rectangle.Perimeter.ToString();
@@ -93,9 +91,9 @@ namespace MyCourseWork
             Refresh();
         }
 
-        private void StartUp(object sender, MouseEventArgs e)
+        private void panel1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            base.OnMouseClick(e);
+            base.OnMouseDoubleClick(e);
 
             switch (e.Button)
             {
@@ -103,14 +101,25 @@ namespace MyCourseWork
 
                     RedoCommands.Clear();
 
-                    Color = Color.Transparent;
-
                     Panel1_Paint(sender,
                 new PaintEventArgs(panel1.CreateGraphics(),
                 new System.Drawing.Rectangle(new Point(panel1.Location.X, panel1.Location.Y),
                 new Size(panel1.Width, panel1.Height))), e.Location.X, e.Location.Y);
-
                     break;
+
+                default:
+                    break;
+            }
+
+            Refresh();
+        }
+
+        private void panel1_MouseClick(object sender, MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+
+            switch (e.Button)
+            {
 
                 case MouseButtons.Right:
 
@@ -125,6 +134,9 @@ namespace MyCourseWork
                     {
                         return;
                     }
+
+                    textBox7.Text = selected.Perimeter.ToString();
+                    textBox8.Text = selected.Surface.ToString();
 
                     foreach (var shape in Shapes)
                     {
@@ -196,7 +208,7 @@ namespace MyCourseWork
                 textBox6.Text = string.Empty;
                 textBox7.Text = string.Empty;
                 textBox8.Text = string.Empty;
-
+                flowLayoutPanel1.BackColor = Color.Transparent;
                 panel1.CreateGraphics().Clear(DefaultBackColor);
 
                 Refresh();
@@ -205,7 +217,7 @@ namespace MyCourseWork
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Undo.Execute();       
+            Undo.Execute();
             Refresh();
         }
 
@@ -223,21 +235,22 @@ namespace MyCourseWork
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
+            base.OnMouseDown(e);
+
+            var shape = Shapes.Where(x => x.Contains(e.Location)).LastOrDefault();
+
+            if (shape == null)
+            {
+                return;
+            }
+
             switch (e.Button)
             {
-                case MouseButtons.Middle:
+                case MouseButtons.Left:
 
-                    var selected = Shapes.Where(x => x.Contains(e.Location)).LastOrDefault();
-
-                    if (selected == null)
-                    {
-                        return;
-                    }
-
-                    selected.ID *= -1;
-
-                    Command.X = (int)selected.X;
-                    Command.Y = (int)selected.Y;
+                    shape.ID *= -1;
+                    Command.X = (int)shape.X;
+                    Command.Y = (int)shape.Y;
                     break;
 
                 default:
@@ -245,59 +258,82 @@ namespace MyCourseWork
             }
         }
 
+        private void panel1_MouseMove(object sender, MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            var shape = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+
+            if (shape == null)
+            {
+                return;
+            }
+
+            if (e.Location.Y + 88 >= panel1.Location.Y)
+            {
+                shape.X = e.Location.X;
+                shape.Y = e.Location.Y + 88;
+            }
+
+            Refresh();
+        }
+
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            switch (e.Button)
+            var shape = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+
+            if (shape == null)
             {
-                case MouseButtons.Middle:
+                return;
+            }
 
-                    var selected = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+            shape.ID *= -1;
 
-                    if (selected == null)
-                    {
-                        return;
-                    }
+            var type = shape.GetType().Name;
 
-                    selected.ID *= -1;
-                    selected.X = e.X + 1;
-                    selected.Y = e.Y + 88;
-
-                    var type = selected.GetType().Name;
-
-                    switch (type)
-                    {
-                        case "Circle":
-                            var cloneCircle = new Circle(float.Parse(textBox1.Text),
-                                selected.X, selected.Y, selected.ID, selected.Color);
-                            Command.Item = cloneCircle;
-                            break;
-                        case "Rectangle":
-                            var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
-                                float.Parse(textBox3.Text), selected.X, selected.Y, selected.ID, selected.Color);
-                            Command.Item = cloneRectangle;
-                            break;
-                        case "Triangle":
-                            var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                                float.Parse(textBox6.Text), float.Parse(textBox5.Text),
-                                selected.X, selected.Y, selected.ID, selected.Color);
-                            Command.Item = cloneTriangle;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    RedoCommands.Clear();
-
-                    Command.Name = "Move";
-                    UndoCommands.Add(Command);
-                    Command = new Command();
+            switch (type)
+            {
+                case "Circle":
+                    var cloneCircle = new Circle(float.Parse(textBox1.Text),
+                        shape.X, shape.Y, shape.ID, shape.Color);
+                    Command.Item = cloneCircle;
                     break;
-
+                case "Rectangle":
+                    var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
+                        float.Parse(textBox3.Text), shape.X, shape.Y, shape.ID, shape.Color);
+                    Command.Item = cloneRectangle;
+                    break;
+                case "Triangle":
+                    var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
+                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
+                        shape.X, shape.Y, shape.ID, shape.Color);
+                    Command.Item = cloneTriangle;
+                    break;
                 default:
                     break;
             }
 
+            RedoCommands.Clear();
+
+            Command.Name = "Move";
+            UndoCommands.Add(Command);
+            Command = new Command();
+
             Refresh();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                flowLayoutPanel1.BackColor = colorDialog1.Color;
+                Refresh();
+            }
+        }
+
+        private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
+        {
+            FillShape();
         }
 
         public void FillShape()
@@ -312,7 +348,7 @@ namespace MyCourseWork
 
             Command.Name = "Fill";
             Command.Color = selected.Color;
-            selected.Color = Color;
+            selected.Color = flowLayoutPanel1.BackColor;
 
             var type = selected.GetType().Name;
 
@@ -341,16 +377,8 @@ namespace MyCourseWork
             RedoCommands.Clear();
             UndoCommands.Add(Command);
             Command = new Command();
-        }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                Color = colorDialog1.Color;
-                FillShape();
-                Refresh();
-            }
+            Refresh();
         }
     }
 }
