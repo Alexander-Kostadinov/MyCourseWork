@@ -261,7 +261,7 @@ namespace MyCourseWork
             // 
             // button4
             // 
-            this.button4.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button4.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.button4.Location = new System.Drawing.Point(632, 66);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 33);

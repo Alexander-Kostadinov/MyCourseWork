@@ -315,19 +315,17 @@ namespace MyCourseWork
             switch (type)
             {
                 case "Circle":
-                    var cloneCircle = new Circle(float.Parse(textBox1.Text),
-                        shape.X, shape.Y, shape.ID, shape.Color);
+                    var cloneCircle = new Circle(shape.FirstSide, shape.X, shape.Y, shape.ID, shape.Color);
                     Command.Item = cloneCircle;
                     break;
                 case "Rectangle":
-                    var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
-                        float.Parse(textBox3.Text), shape.X, shape.Y, shape.ID, shape.Color);
+                    var cloneRectangle = new Rectangle(shape.FirstSide,
+                        shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
                     Command.Item = cloneRectangle;
                     break;
                 case "Triangle":
-                    var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
-                        shape.X, shape.Y, shape.ID, shape.Color);
+                    var cloneTriangle = new Triangle(shape.FirstSide,
+                        shape.SecondSide, shape.ThirdSide, shape.X, shape.Y, shape.ID, shape.Color);
                     Command.Item = cloneTriangle;
                     break;
                 default:
@@ -376,19 +374,18 @@ namespace MyCourseWork
             switch (type)
             {
                 case "Circle":
-                    var cloneCircle = new Circle(float.Parse(textBox1.Text),
+                    var cloneCircle = new Circle(selected.FirstSide,
                         selected.X, selected.Y, selected.ID, selected.Color);
                     Command.Item = cloneCircle;
                     break;
                 case "Rectangle":
-                    var cloneRectangle = new Rectangle(float.Parse(textBox2.Text),
-                        float.Parse(textBox3.Text), selected.X, selected.Y, selected.ID, selected.Color);
+                    var cloneRectangle = new Rectangle(selected.FirstSide,
+                        selected.SecondSide, selected.X, selected.Y, selected.ID, selected.Color);
                     Command.Item = cloneRectangle;
                     break;
                 case "Triangle":
-                    var cloneTriangle = new Triangle(float.Parse(textBox4.Text),
-                        float.Parse(textBox6.Text), float.Parse(textBox5.Text),
-                        selected.X, selected.Y, selected.ID, selected.Color);
+                    var cloneTriangle = new Triangle(selected.FirstSide, selected.SecondSide, 
+                        selected.ThirdSide, selected.X, selected.Y, selected.ID, selected.Color);
                     Command.Item = cloneTriangle;
                     break;
                 default:
@@ -415,21 +412,21 @@ namespace MyCourseWork
                     switch (type)
                     {
                         case "Circle":
-                            outputFile.WriteLine($"Type: {type}, Id: {shape.ID}, X: {shape.X}, Y: {shape.Y}, Radius: {shape.FirstSide}, " +
-                        $"Surface: {shape.Surface}, Perimeter: {shape.Perimeter}, Color: {shape.Color}");
+                            outputFile.WriteLine($"{type} Id: {shape.ID} X: {shape.X} Y: {shape.Y} Radius: {shape.FirstSide} " +
+                        $"Surface: {shape.Surface} Perimeter: {shape.Perimeter} Color: {shape.Color}");
                             break;
 
                         case "Rectangle":
-                            outputFile.WriteLine($"Type: {type}, Id: {shape.ID}, X: {shape.X}, Y: {shape.Y}, " +
-                                $"A: {shape.FirstSide}, B: {shape.SecondSide}, Surface: {shape.Surface}, " +
+                            outputFile.WriteLine($"{type} Id: {shape.ID} X: {shape.X} Y: {shape.Y} " +
+                                $"A: {shape.FirstSide} B: {shape.SecondSide} Surface: {shape.Surface} " +
                                 $"Perimeter: {shape.Perimeter}," +
                                 $"Color: {shape.Color}");
                             break;
 
                         case "Triangle":
-                            outputFile.WriteLine($"Type: {type}, Id: {shape.ID}, X: {shape.X}, Y: {shape.Y}, " +
-                                $"A: {shape.FirstSide}, B: {shape.SecondSide}, C: {shape.ThirdSide}, Surface: {shape.Surface}, " +
-                                $"Perimeter: {shape.Perimeter}," +
+                            outputFile.WriteLine($"{type} Id: {shape.ID} X: {shape.X} Y: {shape.Y} " +
+                                $"A: {shape.FirstSide} B: {shape.SecondSide} C: {shape.ThirdSide} Surface: {shape.Surface} " +
+                                $"Perimeter: {shape.Perimeter}" +
                                 $"Color: {shape.Color}");
                             break;
 
@@ -444,12 +441,43 @@ namespace MyCourseWork
         {
             StreamReader sr = new StreamReader("ExportedShapes.txt");
 
-            var line = sr.ReadLine();
-
-            while (line != null)
+            while (true)
             {
-                line = sr.ReadLine();
+                var line = sr.ReadLine();
+
+                if (line == null)
+                {
+                    break;
+                }
+
+                var type = line.Split(' ').ToArray();
+
+                switch (type[0])
+                {
+                    case "Circle":
+                        var circle = new Circle(float.Parse(type[8]), float.Parse(type[4]),
+                            float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[14]));
+                        Shapes.Add(circle);
+                        break;
+
+                    case "Rectangle":
+                        var rectangle = new Rectangle(float.Parse(type[8]), float.Parse(type[10]),
+                            float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[16]));
+                        Shapes.Add(rectangle);
+                        break;
+
+                    case "Triangle":
+                        var triangle = new Triangle(float.Parse(type[8]), float.Parse(type[10]), float.Parse(type[12]),
+                            float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[16]));
+                        Shapes.Add(triangle);
+                        break;
+
+                    default:
+                        break;
+                }
             }
+
+            Refresh();
 
             sr.Close();
         }
