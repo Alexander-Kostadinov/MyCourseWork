@@ -97,7 +97,7 @@ namespace MyCourseWork
 
             switch (e.Button)
             {
-                case MouseButtons.Left:
+                case MouseButtons.Right:
 
                     RedoCommands.Clear();
 

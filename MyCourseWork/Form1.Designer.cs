@@ -200,7 +200,7 @@ namespace MyCourseWork
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Location = new System.Drawing.Point(0, 108);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(2100, 1500);
+            this.panel1.Size = new System.Drawing.Size(2045, 875);
             this.panel1.TabIndex = 17;
             this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
             this.panel1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDoubleClick);
@@ -291,7 +291,7 @@ namespace MyCourseWork
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 34);
             this.button5.TabIndex = 30;
-            this.button5.Text = "Open";
+            this.button5.Text = "Colors";
             this.button5.UseVisualStyleBackColor = false;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -319,7 +319,7 @@ namespace MyCourseWork
             this.flowLayoutPanel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(470, 7);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(31, 22);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(40, 31);
             this.flowLayoutPanel1.TabIndex = 33;
             this.flowLayoutPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.flowLayoutPanel1_MouseClick);
             // 
@@ -357,8 +357,7 @@ namespace MyCourseWork
             this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
-            this.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
