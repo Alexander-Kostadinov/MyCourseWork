@@ -12,8 +12,55 @@ namespace MyCourseWork
         private int id;
         private float x;
         private float y;
+        protected float firstSide;
+        protected float secondSide;
+        protected float thirdSide;
         protected double surface;
         protected double perimeter;
+
+        public float FirstSide
+        {
+            get => firstSide;
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("You should enter positive number!");
+                }
+
+                firstSide = value;
+            }
+        }
+
+        public float SecondSide
+        {
+            get => secondSide;
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("You should enter positive number!");
+                }
+
+                secondSide = value;
+            }
+        }
+        public float ThirdSide
+        {
+            get => thirdSide;
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("You should enter positive number!");
+                }
+
+                thirdSide = value;
+            }
+        }
 
         public Pen Pen { get; set; }
         protected SolidBrush Brush { get; }
@@ -41,7 +88,6 @@ namespace MyCourseWork
 
         public double Surface => Math.Round(CalculateSurface(), 2);
         public double Perimeter => Math.Round(CalculatePerimeter(), 2);
-
 
         protected Shape(float x, float y, int id, Color color)
         {

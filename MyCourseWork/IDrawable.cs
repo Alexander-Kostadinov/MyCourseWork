@@ -12,6 +12,9 @@ namespace MyCourseWork
         int ID { get; set; }
         float X { get; set; }
         float Y { get; set; }
+        float FirstSide { get; set; }
+        float SecondSide { get; set; }
+        float ThirdSide { get; set; }
         double Surface { get; }
         double Perimeter { get; }
         Color Color { get; set; }

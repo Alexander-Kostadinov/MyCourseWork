@@ -9,67 +9,35 @@ namespace MyCourseWork
 {
     class Rectangle : Shape
     {
-        private float a;
-        private float b;
-
-        public float A
-        {
-            get => a;
-
-            private set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("The side should be positive number!");
-                }
-
-                a = value;
-            }
-        }
-        public float B
-        {
-            get => b;
-
-            private set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("The side should be positive number!");
-                }
-
-                b = value;
-            }
-        }
-
         public Rectangle(float a, float b, float x, float y, int id, Color color) 
             : base(x, y, id, color)
         {
-            this.a = a;
-            this.b = b;
+            FirstSide = a;
+            SecondSide = b;
         }
 
         public override double CalculateSurface()
         {
-            surface = a * b;
+            surface = firstSide * secondSide;
             return surface;
         }
         public override double CalculatePerimeter()
         {
-            perimeter = 2 * a + 2 * b;
+            perimeter = 2 * firstSide + 2 * secondSide;
             return perimeter;
         }
 
         public override void Draw(Graphics graphics, float x, float y)
-            => graphics.DrawRectangle(Pen, x, y, a, b);
+            => graphics.DrawRectangle(Pen, x, y, firstSide, secondSide);
 
         public override void Fill(Graphics graphics, float x, float y)
-            => graphics.FillRectangle(Brush, x, y, a, b);
+            => graphics.FillRectangle(Brush, x, y, firstSide, secondSide);
 
         public override bool Contains(Point point)
         {
             return
-                X <= point.X + 1 && point.X + 1 <= X + A &&
-                Y <= point.Y + 88 && point.Y + 88 <= Y + B;
+                X <= point.X + 1 && point.X + 1 <= X + firstSide &&
+                Y <= point.Y + 88 && point.Y + 88 <= Y + secondSide;
         }
     }
 }

@@ -9,51 +9,34 @@ namespace MyCourseWork
 {
     class Circle : Shape
     {
-        private float radius;
-
-        public float Radius
-        {
-            get => radius;
-
-            private set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("The radius should be positive number!");
-                }
-
-                radius = value;
-            }
-        }
-
         public Circle(float radius, float x, float y, int id, Color color) 
             : base(x, y, id, color)
         {
-            this.radius = radius;
+            FirstSide = radius;
         }
 
         public override double CalculateSurface()
         {
-            surface = Math.PI * radius * radius;
+            surface = Math.PI * firstSide * firstSide;
             return surface;
         }
         public override double CalculatePerimeter()
         {
-            perimeter = 2 * Math.PI * radius;
+            perimeter = 2 * Math.PI * firstSide;
             return perimeter;
         }
 
         public override void Draw(Graphics graphics, float x, float y) 
-            => graphics.DrawEllipse(Pen, x, y, radius, radius);
+            => graphics.DrawEllipse(Pen, x, y, firstSide, firstSide);
 
         public override void Fill(Graphics graphics, float x, float y) 
-            => graphics.FillEllipse(Brush, x, y, radius, radius);
+            => graphics.FillEllipse(Brush, x, y, firstSide, firstSide);
 
         public override bool Contains(Point point)
         {
             return
-                X <= point.X && point.X <= X + Radius &&
-                Y <= point.Y + 87 && point.Y + 87 <= Y + Radius;
+                X <= point.X && point.X <= X + firstSide &&
+                Y <= point.Y + 87 && point.Y + 87 <= Y + firstSide;
         }
     }
 }

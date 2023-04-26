@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -133,6 +134,26 @@ namespace MyCourseWork
                     if (selected == null)
                     {
                         return;
+                    }
+
+                    var type = selected.GetType().Name;
+
+                    switch (type)
+                    {
+                        case "Circle":
+                            textBox1.Text = selected.FirstSide.ToString();
+                            break;
+                        case "Rectangle":
+                            textBox2.Text = selected.FirstSide.ToString();
+                            textBox3.Text = selected.SecondSide.ToString();
+                            break;
+                        case "Triangle":
+                            textBox4.Text = selected.FirstSide.ToString();
+                            textBox6.Text = selected.SecondSide.ToString();
+                            textBox5.Text = selected.ThirdSide.ToString();
+                            break;
+                        default:
+                            break;
                     }
 
                     textBox7.Text = selected.Perimeter.ToString();
@@ -379,6 +400,58 @@ namespace MyCourseWork
             Command = new Command();
 
             Refresh();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string docPath = Directory.GetCurrentDirectory();
+
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "ExportedShapes.txt")))
+            {
+                foreach (var shape in Shapes)
+                {
+                    var type = shape.GetType().Name;
+
+                    switch (type)
+                    {
+                        case "Circle":
+                            outputFile.WriteLine($"Type: {type}, Id: {shape.ID}, X: {shape.X}, Y: {shape.Y}, Radius: {shape.FirstSide}, " +
+                        $"Surface: {shape.Surface}, Perimeter: {shape.Perimeter}, Color: {shape.Color}");
+                            break;
+
+                        case "Rectangle":
+                            outputFile.WriteLine($"Type: {type}, Id: {shape.ID}, X: {shape.X}, Y: {shape.Y}, " +
+                                $"A: {shape.FirstSide}, B: {shape.SecondSide}, Surface: {shape.Surface}, " +
+                                $"Perimeter: {shape.Perimeter}," +
+                                $"Color: {shape.Color}");
+                            break;
+
+                        case "Triangle":
+                            outputFile.WriteLine($"Type: {type}, Id: {shape.ID}, X: {shape.X}, Y: {shape.Y}, " +
+                                $"A: {shape.FirstSide}, B: {shape.SecondSide}, C: {shape.ThirdSide}, Surface: {shape.Surface}, " +
+                                $"Perimeter: {shape.Perimeter}," +
+                                $"Color: {shape.Color}");
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            StreamReader sr = new StreamReader("ExportedShapes.txt");
+
+            var line = sr.ReadLine();
+
+            while (line != null)
+            {
+                line = sr.ReadLine();
+            }
+
+            sr.Close();
         }
     }
 }

@@ -58,6 +58,8 @@ namespace MyCourseWork
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // radioButton1
@@ -99,7 +101,7 @@ namespace MyCourseWork
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(82, 36);
+            this.label2.Location = new System.Drawing.Point(82, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 17);
             this.label2.TabIndex = 4;
@@ -108,7 +110,7 @@ namespace MyCourseWork
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(82, 58);
+            this.label3.Location = new System.Drawing.Point(82, 51);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 17);
             this.label3.TabIndex = 5;
@@ -117,7 +119,7 @@ namespace MyCourseWork
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(178, 36);
+            this.label4.Location = new System.Drawing.Point(178, 33);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(29, 17);
             this.label4.TabIndex = 6;
@@ -126,7 +128,7 @@ namespace MyCourseWork
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(178, 58);
+            this.label5.Location = new System.Drawing.Point(178, 54);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 17);
             this.label5.TabIndex = 7;
@@ -135,7 +137,7 @@ namespace MyCourseWork
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(178, 80);
+            this.label6.Location = new System.Drawing.Point(178, 74);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 17);
             this.label6.TabIndex = 8;
@@ -144,7 +146,7 @@ namespace MyCourseWork
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 36);
+            this.label1.Location = new System.Drawing.Point(9, 33);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 17);
             this.label1.TabIndex = 9;
@@ -153,7 +155,7 @@ namespace MyCourseWork
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox1.Location = new System.Drawing.Point(38, 33);
+            this.textBox1.Location = new System.Drawing.Point(38, 31);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(38, 22);
             this.textBox1.TabIndex = 10;
@@ -161,35 +163,35 @@ namespace MyCourseWork
             // textBox2
             // 
             this.textBox2.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox2.Location = new System.Drawing.Point(117, 33);
+            this.textBox2.Location = new System.Drawing.Point(117, 30);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(38, 22);
             this.textBox2.TabIndex = 11;
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(117, 55);
+            this.textBox3.Location = new System.Drawing.Point(117, 51);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(38, 22);
             this.textBox3.TabIndex = 12;
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(213, 36);
+            this.textBox4.Location = new System.Drawing.Point(213, 31);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(38, 22);
             this.textBox4.TabIndex = 13;
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(213, 58);
+            this.textBox6.Location = new System.Drawing.Point(213, 53);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(38, 22);
             this.textBox6.TabIndex = 15;
             // 
             // textBox5
             // 
-            this.textBox5.Location = new System.Drawing.Point(213, 80);
+            this.textBox5.Location = new System.Drawing.Point(213, 75);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(38, 22);
             this.textBox5.TabIndex = 16;
@@ -287,7 +289,7 @@ namespace MyCourseWork
             // button5
             // 
             this.button5.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.button5.Location = new System.Drawing.Point(722, 4);
+            this.button5.Location = new System.Drawing.Point(722, 6);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 34);
             this.button5.TabIndex = 30;
@@ -298,7 +300,7 @@ namespace MyCourseWork
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(516, 4);
+            this.label9.Location = new System.Drawing.Point(516, 8);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(200, 17);
             this.label9.TabIndex = 31;
@@ -307,7 +309,7 @@ namespace MyCourseWork
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(371, 4);
+            this.label10.Location = new System.Drawing.Point(371, 8);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(94, 17);
             this.label10.TabIndex = 32;
@@ -317,11 +319,31 @@ namespace MyCourseWork
             // 
             this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.flowLayoutPanel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(470, 7);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(470, 8);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(40, 31);
             this.flowLayoutPanel1.TabIndex = 33;
             this.flowLayoutPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.flowLayoutPanel1_MouseClick);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(85, 80);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.TabIndex = 34;
+            this.button6.Text = "Export";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(4, 80);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 35;
+            this.button7.Text = "Import";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // Form1
             // 
@@ -329,6 +351,8 @@ namespace MyCourseWork
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -396,6 +420,8 @@ namespace MyCourseWork
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
     }
 }
 
