@@ -55,11 +55,14 @@ namespace MyCourseWork
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.button5 = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // radioButton1
@@ -229,7 +232,7 @@ namespace MyCourseWork
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.button1.Location = new System.Drawing.Point(722, 66);
+            this.button1.Location = new System.Drawing.Point(722, 71);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 33);
             this.button1.TabIndex = 25;
@@ -240,7 +243,7 @@ namespace MyCourseWork
             // button2
             // 
             this.button2.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button2.Location = new System.Drawing.Point(482, 66);
+            this.button2.Location = new System.Drawing.Point(443, 71);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 33);
             this.button2.TabIndex = 0;
@@ -251,7 +254,7 @@ namespace MyCourseWork
             // button3
             // 
             this.button3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button3.Location = new System.Drawing.Point(390, 66);
+            this.button3.Location = new System.Drawing.Point(362, 71);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 33);
             this.button3.TabIndex = 26;
@@ -262,7 +265,7 @@ namespace MyCourseWork
             // button4
             // 
             this.button4.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.button4.Location = new System.Drawing.Point(632, 66);
+            this.button4.Location = new System.Drawing.Point(524, 71);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 33);
             this.button4.TabIndex = 27;
@@ -289,27 +292,18 @@ namespace MyCourseWork
             // button5
             // 
             this.button5.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.button5.Location = new System.Drawing.Point(722, 6);
+            this.button5.Location = new System.Drawing.Point(624, 71);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 34);
+            this.button5.Size = new System.Drawing.Size(75, 33);
             this.button5.TabIndex = 30;
             this.button5.Text = "Colors";
             this.button5.UseVisualStyleBackColor = false;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(516, 8);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(200, 17);
-            this.label9.TabIndex = 31;
-            this.label9.Text = "Open color dialog to fill shape:";
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(371, 8);
+            this.label10.Location = new System.Drawing.Point(657, 3);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(94, 17);
             this.label10.TabIndex = 32;
@@ -319,7 +313,7 @@ namespace MyCourseWork
             // 
             this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.flowLayoutPanel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(470, 8);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(755, 4);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(40, 31);
             this.flowLayoutPanel1.TabIndex = 33;
@@ -327,23 +321,48 @@ namespace MyCourseWork
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(85, 80);
+            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button6.Location = new System.Drawing.Point(425, 3);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.Size = new System.Drawing.Size(75, 27);
             this.button6.TabIndex = 34;
-            this.button6.Text = "Export";
+            this.button6.Text = "Save";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(4, 80);
+            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(567, 3);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.Size = new System.Drawing.Size(75, 27);
             this.button7.TabIndex = 35;
-            this.button7.Text = "Import";
+            this.button7.Text = "Add";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(359, 4);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(66, 17);
+            this.label9.TabIndex = 36;
+            this.label9.Text = "Save file:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(506, 3);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(59, 17);
+            this.label11.TabIndex = 37;
+            this.label11.Text = "Add file:";
             // 
             // Form1
             // 
@@ -351,11 +370,12 @@ namespace MyCourseWork
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.textBox8);
             this.Controls.Add(this.label7);
@@ -417,11 +437,14 @@ namespace MyCourseWork
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label11;
     }
 }
 
