@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyCourseWork
+namespace Shapes
 {
-    class Circle : Shape
+    public class Circle : Shape
     {
         public Circle(float radius, float x, float y, int id, Color color) 
             : base(x, y, id, color)

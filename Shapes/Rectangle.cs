@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyCourseWork
+namespace Shapes
 {
-    class Rectangle : Shape
+    public class Rectangle : Shape
     {
         public Rectangle(float a, float b, float x, float y, int id, Color color) 
             : base(x, y, id, color)

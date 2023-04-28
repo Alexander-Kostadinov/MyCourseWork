@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyCourseWork
+namespace Shapes
 {
     public abstract class Shape : IDrawable
     {

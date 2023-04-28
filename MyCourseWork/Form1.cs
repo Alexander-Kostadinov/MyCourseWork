@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Shapes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace MyCourseWork
                     Command.Item = cloneCircle;
                     break;
                 case "Rectangle":
-                    var cloneRectangle = new Rectangle(selected.FirstSide,
+                    var cloneRectangle = new Shapes.Rectangle(selected.FirstSide,
                         selected.SecondSide, selected.X, selected.Y, selected.ID, selected.Color);
                     Command.Item = cloneRectangle;
                     break;
@@ -115,7 +116,7 @@ namespace MyCourseWork
                         textBox8.Text = triangle.Surface.ToString();
                         break;
                     case "Rectangle":
-                        var rectangle = new Rectangle(float.Parse(textBox2.Text),
+                        var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
                             float.Parse(textBox3.Text), x, y, ID, flowLayoutPanel1.BackColor);
                         Command.Item = rectangle;
                         Shapes.Add(rectangle);
@@ -293,7 +294,7 @@ namespace MyCourseWork
                     Command.Item = cloneCircle;
                     break;
                 case "Rectangle":
-                    var cloneRectangle = new Rectangle(shape.FirstSide,
+                    var cloneRectangle = new Shapes.Rectangle(shape.FirstSide,
                         shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
                     Command.Item = cloneRectangle;
                     break;
@@ -480,7 +481,7 @@ namespace MyCourseWork
                                 break;
 
                             case "Rectangle":
-                                var rectangle = new Rectangle(float.Parse(type[8]), float.Parse(type[10]),
+                                var rectangle = new Shapes.Rectangle(float.Parse(type[8]), float.Parse(type[10]),
                                     float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[16]));
                                 Shapes.Add(rectangle);
                                 break;

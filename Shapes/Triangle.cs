@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyCourseWork
+namespace Shapes
 {
-    class Triangle : Shape
+    public class Triangle : Shape
     {
         public Triangle(float a, float b, float c, float x, float y, int id, Color color) 
             : base(x, y, id, color)
