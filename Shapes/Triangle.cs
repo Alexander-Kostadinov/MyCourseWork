@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace Shapes
 {
     public class Triangle : Shape
     {
-        public Triangle(float a, float b, float c, float x, float y, int id, Color color) 
+        public Triangle(float a, float b, float c, float x, float y, int id, string color) 
             : base(x, y, id, color)
         {
             FirstSide = a;
@@ -46,7 +45,7 @@ namespace Shapes
             return perimeter;
         }
 
-        public override void Draw(Graphics graphics, float x, float y)
+        public override Point[] Draw(float x, float y)
         {
             var h = 2 * Surface / thirdSide;
             var distanceToA = Math.Sqrt((secondSide * secondSide) - (h * h));
@@ -68,10 +67,10 @@ namespace Shapes
 
             var points = new Point[] { pointA, pointB, pointC };
 
-            graphics.DrawPolygon(Pen, points);
+            return points;
         }
 
-        public override void Fill(Graphics graphics, float x, float y)
+        public override Point[] Fill(float x, float y)
         {
             var h = 2 * Surface / thirdSide;
             var distanceToA = Math.Sqrt((secondSide * secondSide) - (h * h));
@@ -93,7 +92,7 @@ namespace Shapes
 
             var points = new Point[] { pointA, pointB, pointC };
 
-            graphics.FillPolygon(Brush, points);
+            return points;
         }
 
         public override bool Contains(Point point)

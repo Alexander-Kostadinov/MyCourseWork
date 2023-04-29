@@ -28,14 +28,12 @@ namespace MyCourseWork
                 return;
             }
 
-            var selected = Shapes.Where(x => x.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash).FirstOrDefault();
+            var selected = Shapes.Where(x => x.ID < 0).FirstOrDefault();
 
             if (selected == null)
             {
                 return;
             }
-
-            selected.Pen = new Pen(Color.Black, 2);
 
             Command.Name = "Remove";
             Command.Item = selected;

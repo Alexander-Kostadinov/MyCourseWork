@@ -15,18 +15,22 @@ namespace MyCourseWork
     public partial class Form1 : Form
     {
         public int ID { get; set; }
+        public int CurrentID { get; set; }
         public string ShapeType { get; set; }
 
+        Color Color { get; set; }
+        public Pen Pen { get; set; }
         public List<IDrawable> Shapes { get; set; }
-
-        public Command Command { get; set; }
-        public List<Command> UndoCommands { get; set; }
-        public List<Command> RedoCommands { get; set; }
 
         public Undo Undo { get; set; }
         public Redo Redo { get; set; }
         public Clear Clear { get; set; }
         public Remove Remove { get; set; }
+
+        public Command Command { get; set; }
+        public List<Command> UndoCommands { get; set; }
+        public List<Command> RedoCommands { get; set; }
+
 
         public Form1()
         {
@@ -35,6 +39,8 @@ namespace MyCourseWork
             ID = 0;
             ShapeType = string.Empty;
 
+            Color = new Color();
+            Pen = new Pen(Color.Black, 2);
             Shapes = new List<IDrawable>();
 
             Command = new Command();
@@ -47,50 +53,6 @@ namespace MyCourseWork
             Remove = new Remove(UndoCommands, RedoCommands, Shapes);
         }
 
-        public void FillShape()
-        {
-            var selected = Shapes.Where
-                (x => x.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash).FirstOrDefault();
-
-            if (selected == null)
-            {
-                return;
-            }
-
-            Command.Name = "Fill";
-            Command.Color = selected.Color;
-            selected.Color = flowLayoutPanel1.BackColor;
-
-            var type = selected.GetType().Name;
-
-            switch (type)
-            {
-                case "Circle":
-                    var cloneCircle = new Circle(selected.FirstSide,
-                        selected.X, selected.Y, selected.ID, selected.Color);
-                    Command.Item = cloneCircle;
-                    break;
-                case "Rectangle":
-                    var cloneRectangle = new Shapes.Rectangle(selected.FirstSide,
-                        selected.SecondSide, selected.X, selected.Y, selected.ID, selected.Color);
-                    Command.Item = cloneRectangle;
-                    break;
-                case "Triangle":
-                    var cloneTriangle = new Triangle(selected.FirstSide, selected.SecondSide, 
-                        selected.ThirdSide, selected.X, selected.Y, selected.ID, selected.Color);
-                    Command.Item = cloneTriangle;
-                    break;
-                default:
-                    break;
-            }
-
-            RedoCommands.Clear();
-            UndoCommands.Add(Command);
-            Command = new Command();
-
-            Refresh();
-        }
-
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
         {
             y += panel1.Location.Y;
@@ -101,7 +63,7 @@ namespace MyCourseWork
                 switch (ShapeType)
                 {
                     case "Circle":
-                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, flowLayoutPanel1.BackColor);
+                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, flowLayoutPanel1.BackColor.ToString());
                         Command.Item = circle;
                         Shapes.Add(circle);
                         textBox7.Text = circle.Perimeter.ToString();
@@ -109,7 +71,8 @@ namespace MyCourseWork
                         break;
                     case "Triangle":
                         var triangle = new Triangle(float.Parse(textBox4.Text),
-                            float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, flowLayoutPanel1.BackColor);
+                            float.Parse(textBox6.Text), float.Parse(textBox5.Text),
+                            x, y, ID, flowLayoutPanel1.BackColor.ToString());
                         Command.Item = triangle;
                         Shapes.Add(triangle);
                         textBox7.Text = triangle.Perimeter.ToString();
@@ -117,7 +80,7 @@ namespace MyCourseWork
                         break;
                     case "Rectangle":
                         var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
-                            float.Parse(textBox3.Text), x, y, ID, flowLayoutPanel1.BackColor);
+                            float.Parse(textBox3.Text), x, y, ID, flowLayoutPanel1.BackColor.ToString());
                         Command.Item = rectangle;
                         Shapes.Add(rectangle);
                         textBox7.Text = rectangle.Perimeter.ToString();
@@ -139,7 +102,45 @@ namespace MyCourseWork
 
         private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
         {
-            FillShape();
+            var selected = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+
+            if (selected == null)
+            {
+                return;
+            }
+
+            Command.Name = "Fill";
+            Command.Color = Color.FromName(selected.Color);
+            selected.Color = flowLayoutPanel1.BackColor.Name;
+
+            var type = selected.GetType().Name;
+
+            switch (type)
+            {
+                case "Circle":
+                    var cloneCircle = new Circle(selected.FirstSide,
+                        selected.X, selected.Y, selected.ID, selected.Color);
+                    Command.Item = cloneCircle;
+                    break;
+                case "Rectangle":
+                    var cloneRectangle = new Shapes.Rectangle(selected.FirstSide,
+                        selected.SecondSide, selected.X, selected.Y, selected.ID, selected.Color);
+                    Command.Item = cloneRectangle;
+                    break;
+                case "Triangle":
+                    var cloneTriangle = new Triangle(selected.FirstSide, selected.SecondSide,
+                        selected.ThirdSide, selected.X, selected.Y, selected.ID, selected.Color);
+                    Command.Item = cloneTriangle;
+                    break;
+                default:
+                    break;
+            }
+
+            RedoCommands.Clear();
+            UndoCommands.Add(Command);
+            Command = new Command();
+
+            Refresh();
         }
 
         private void panel1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -154,7 +155,7 @@ namespace MyCourseWork
 
                     Panel1_Paint(sender,
                 new PaintEventArgs(panel1.CreateGraphics(),
-                new System.Drawing.Rectangle(new Point(panel1.Location.X, panel1.Location.Y),
+                new System.Drawing.Rectangle(new System.Drawing.Point(panel1.Location.X, panel1.Location.Y),
                 new Size(panel1.Width, panel1.Height))), e.Location.X, e.Location.Y);
                     break;
 
@@ -171,15 +172,25 @@ namespace MyCourseWork
 
             switch (e.Button)
             {
-
                 case MouseButtons.Left:
 
-                    var selected = Shapes.Where(x => x.Contains(e.Location)).LastOrDefault();
+                    var point = new Shapes.Point(e.Location.X, e.Location.Y);
+
+                    var selected = Shapes.Where(x => x.Contains(point)).LastOrDefault();
 
                     if (selected == null)
                     {
                         return;
                     }
+
+                    var unselect = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+
+                    if (unselect != null && unselect.ID != selected.ID)
+                    {
+                        unselect.ID *= -1;
+                    }
+
+                    selected.ID *= -1;
 
                     var type = selected.GetType().Name;
 
@@ -204,61 +215,41 @@ namespace MyCourseWork
                     textBox7.Text = selected.Perimeter.ToString();
                     textBox8.Text = selected.Surface.ToString();
 
-                    var shape = Shapes.Where(x => x.ID != selected.ID
-                    && x.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash).FirstOrDefault();
-
-                    if (shape != null)
-                    {
-                        shape.Pen = new Pen(Color.Black, 2);
-                    }
-
-                    if (selected.Pen.DashStyle == System.Drawing.Drawing2D.DashStyle.Dash)
-                    {
-                        selected.Pen = new Pen(Color.Black, 2);
-                    }
-                    else
-                    {
-                        selected.Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                    }
+                    Refresh();
                     break;
 
                 default:
                     break;
             }
-
-            Refresh();
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
-            base.OnMouseDown(e);
-
-            var shape = Shapes.Where(x => x.Contains(e.Location)).LastOrDefault();
-
-            if (shape == null)
-            {
-                return;
-            }
-
             switch (e.Button)
             {
                 case MouseButtons.Right:
 
-                    shape.ID *= -1;
+                    var point = new Shapes.Point(e.Location.X, e.Location.Y);
+
+                    var shape = Shapes.Where(x => x.Contains(point)).LastOrDefault();
+
+                    if (shape == null)
+                    {
+                        return;
+                    }
+
+                    CurrentID = shape.ID;
+                    shape.ID = 0;
                     Command.X = (int)shape.X;
                     Command.Y = (int)shape.Y;
-                    break;
 
-                default:
                     break;
             }
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
-            base.OnMouseMove(e);
-
-            var shape = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+            var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
 
             if (shape == null)
             {
@@ -276,44 +267,54 @@ namespace MyCourseWork
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            var shape = Shapes.Where(x => x.ID < 0).FirstOrDefault();
-
-            if (shape == null)
+            switch (e.Button)
             {
-                return;
-            }
+                case MouseButtons.Right:
 
-            shape.ID *= -1;
+                    var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
 
-            var type = shape.GetType().Name;
+                    if (shape == null)
+                    {
+                        return;
+                    }
 
-            switch (type)
-            {
-                case "Circle":
-                    var cloneCircle = new Circle(shape.FirstSide, shape.X, shape.Y, shape.ID, shape.Color);
-                    Command.Item = cloneCircle;
+                    var type = shape.GetType().Name;
+
+                    shape.ID = CurrentID;
+                    CurrentID = 0;
+
+                    switch (type)
+                    {
+                        case "Circle":
+                            var cloneCircle = new Circle(shape.FirstSide, shape.X, shape.Y, shape.ID, shape.Color);
+                            Command.Item = cloneCircle;
+                            break;
+                        case "Rectangle":
+                            var cloneRectangle = new Shapes.Rectangle(shape.FirstSide,
+                                shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
+                            Command.Item = cloneRectangle;
+                            break;
+                        case "Triangle":
+                            var cloneTriangle = new Triangle(shape.FirstSide,
+                                shape.SecondSide, shape.ThirdSide, shape.X, shape.Y, shape.ID, shape.Color);
+                            Command.Item = cloneTriangle;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    RedoCommands.Clear();
+
+                    Command.Name = "Move";
+                    UndoCommands.Add(Command);
+                    Command = new Command();
+
+                    Refresh();
                     break;
-                case "Rectangle":
-                    var cloneRectangle = new Shapes.Rectangle(shape.FirstSide,
-                        shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
-                    Command.Item = cloneRectangle;
-                    break;
-                case "Triangle":
-                    var cloneTriangle = new Triangle(shape.FirstSide,
-                        shape.SecondSide, shape.ThirdSide, shape.X, shape.Y, shape.ID, shape.Color);
-                    Command.Item = cloneTriangle;
-                    break;
+
                 default:
                     break;
             }
-
-            RedoCommands.Clear();
-
-            Command.Name = "Move";
-            UndoCommands.Add(Command);
-            Command = new Command();
-
-            Refresh();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -322,8 +323,51 @@ namespace MyCourseWork
 
             foreach (var shape in Shapes)
             {
-                shape.Draw(e.Graphics, shape.X, shape.Y);
-                shape.Fill(e.Graphics, shape.X, shape.Y);
+                var type = shape.GetType().Name;
+
+                Color = Color.FromName(shape.Color);
+
+                switch (type)
+                {
+                    case "Circle":
+                        if (shape.ID < 0)
+                        {
+                            Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        }
+                        e.Graphics.DrawEllipse(Pen, shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
+                        e.Graphics.FillEllipse(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
+                        break;
+
+                    case "Rectangle":
+                        if (shape.ID < 0)
+                        {
+                            Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        }
+                        e.Graphics.DrawRectangle(Pen, shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
+                        e.Graphics.FillRectangle(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
+                        break;
+
+                    case "Triangle":
+                        if (shape.ID < 0)
+                        {
+                            Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        }
+                        var points = shape.Draw(shape.X, shape.Y);
+
+                        var pointsF = new PointF[3];
+                        pointsF[0] = new PointF(points[0].X, points[0].Y);
+                        pointsF[1] = new PointF(points[1].X, points[1].Y);
+                        pointsF[2] = new PointF(points[2].X, points[2].Y);
+
+                        e.Graphics.DrawPolygon(Pen, pointsF);
+                        e.Graphics.FillPolygon(new SolidBrush(Color), pointsF);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                Pen = new Pen(Color.Black, 2);
             }
         }
 
@@ -397,22 +441,19 @@ namespace MyCourseWork
                             switch (type)
                             {
                                 case "Circle":
-                                    outputFile.WriteLine($"{type} Id: {shape.ID} X: {shape.X} Y: {shape.Y} Radius: {shape.FirstSide} " +
-                                $"Surface: {shape.Surface} Perimeter: {shape.Perimeter} Color: {shape.Color}");
+                                    outputFile.WriteLine($"{type} Id: {shape.ID} " +
+                                        $"X: {shape.X} Y: {shape.Y} Radius: {shape.FirstSide} Color: {shape.Color}");
                                     break;
 
                                 case "Rectangle":
                                     outputFile.WriteLine($"{type} Id: {shape.ID} X: {shape.X} Y: {shape.Y} " +
-                                        $"A: {shape.FirstSide} B: {shape.SecondSide} Surface: {shape.Surface} " +
-                                        $"Perimeter: {shape.Perimeter} " +
-                                        $"Color: {shape.Color}");
+                                        $"A: {shape.FirstSide} B: {shape.SecondSide}  Color: {shape.Color}");
                                     break;
 
                                 case "Triangle":
                                     outputFile.WriteLine($"{type} Id: {shape.ID} X: {shape.X} Y: {shape.Y} " +
-                                        $"A: {shape.FirstSide} B: {shape.SecondSide} C: {shape.ThirdSide} Surface: {shape.Surface} " +
-                                        $"Perimeter: {shape.Perimeter} " +
-                                        $"Color: {shape.Color}");
+                                        $"A: {shape.FirstSide} B: {shape.SecondSide} C: {shape.ThirdSide}" +
+                                        $" Color: {shape.Color}");
                                     break;
 
                                 default:
@@ -458,12 +499,13 @@ namespace MyCourseWork
 
                         ids = Shapes.Select(x => x.ID).
                             Concat(UndoCommands.Select(x => x.Item.ID)).
-                            Concat(RedoCommands.Select(x => x.Item.ID)).OrderBy(x => x).ToList();
+                            Concat(RedoCommands.Select(x => x.Item.ID)).ToList();
 
                         if (ids != null && ids.Contains(int.Parse(type[2])))
                         {
                             ID = ids.OrderBy(x => x).Reverse().First();
                             ID++;
+
                             type[2] = ID.ToString();
                         }
                         else if (ids != null && ID <= int.Parse(type[2]))
@@ -476,28 +518,28 @@ namespace MyCourseWork
                         {
                             case "Circle":
                                 var circle = new Circle(float.Parse(type[8]), float.Parse(type[4]),
-                                    float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[14]));
+                                    float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[10]).Name);
                                 Shapes.Add(circle);
                                 break;
 
                             case "Rectangle":
                                 var rectangle = new Shapes.Rectangle(float.Parse(type[8]), float.Parse(type[10]),
-                                    float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[16]));
+                                    float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[13]).Name);
                                 Shapes.Add(rectangle);
                                 break;
 
                             case "Triangle":
                                 var triangle = new Triangle(float.Parse(type[8]), float.Parse(type[10]), float.Parse(type[12]),
-                                    float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[16]));
+                                    float.Parse(type[4]), float.Parse(type[6]), int.Parse(type[2]), Color.FromName(type[14]).Name);
                                 Shapes.Add(triangle);
                                 break;
 
                             default:
                                 break;
                         }
-                    }
 
-                    Refresh();
+                        Refresh();
+                    }
 
                     sr.Close();
                 }

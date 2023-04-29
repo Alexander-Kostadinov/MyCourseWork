@@ -1,5 +1,6 @@
 ﻿using System;
 using Shapes;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,18 +32,21 @@ namespace MyCourseWork
                     Shapes.Remove(lastCommand.Item);
                     break;
                 case "Fill":
-                    var colorToChange = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
+
+                    var colorToChange = Shapes.Where(x =>
+                    x.ID == lastCommand.Item.ID|| x.ID == lastCommand.Item.ID * -1).FirstOrDefault();
 
                     if (colorToChange == null)
                     {
                         break;
                     }
 
-                    colorToChange.Color = lastCommand.Color;
+                    colorToChange.Color = lastCommand.Color.Name;
                     break;
 
                 case "Move":
-                    var shapeToMove = Shapes.Where(x => x.ID == lastCommand.Item.ID).FirstOrDefault();
+                    var shapeToMove = Shapes.Where(x =>
+                    x.ID == lastCommand.Item.ID || x.ID == lastCommand.Item.ID * -1).FirstOrDefault();
 
                     if (shapeToMove == null)
                     {

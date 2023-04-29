@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace Shapes
 {
     public class Rectangle : Shape
     {
-        public Rectangle(float a, float b, float x, float y, int id, Color color) 
+        public Rectangle(float a, float b, float x, float y, int id, string color) 
             : base(x, y, id, color)
         {
             FirstSide = a;
@@ -27,11 +26,15 @@ namespace Shapes
             return perimeter;
         }
 
-        public override void Draw(Graphics graphics, float x, float y)
-            => graphics.DrawRectangle(Pen, x, y, firstSide, secondSide);
+        public override Point[] Draw(float x, float y)
+        {
+            throw new NotImplementedException();
+        }
 
-        public override void Fill(Graphics graphics, float x, float y)
-            => graphics.FillRectangle(Brush, x, y, firstSide, secondSide);
+        public override Point[] Fill(float x, float y)
+        {
+            throw new NotImplementedException();
+        }
 
         public override bool Contains(Point point)
         {

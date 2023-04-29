@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace MyCourseWork
 {
-    public class Command : ICommand
+    public class Command
     {
         public int X { get; set; }
         public int Y { get; set; }

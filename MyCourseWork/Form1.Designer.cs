@@ -232,7 +232,7 @@ namespace MyCourseWork
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.button1.Location = new System.Drawing.Point(722, 71);
+            this.button1.Location = new System.Drawing.Point(622, 71);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 33);
             this.button1.TabIndex = 25;
@@ -292,7 +292,7 @@ namespace MyCourseWork
             // button5
             // 
             this.button5.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.button5.Location = new System.Drawing.Point(624, 71);
+            this.button5.Location = new System.Drawing.Point(720, 71);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 33);
             this.button5.TabIndex = 30;
@@ -334,11 +334,11 @@ namespace MyCourseWork
             // 
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(567, 3);
+            this.button7.Location = new System.Drawing.Point(571, 3);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 27);
             this.button7.TabIndex = 35;
-            this.button7.Text = "Add";
+            this.button7.Text = "Open";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
@@ -349,7 +349,7 @@ namespace MyCourseWork
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(359, 4);
+            this.label9.Location = new System.Drawing.Point(353, 4);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(66, 17);
             this.label9.TabIndex = 36;

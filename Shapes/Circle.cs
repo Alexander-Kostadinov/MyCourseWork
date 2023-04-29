@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace Shapes
 {
     public class Circle : Shape
     {
-        public Circle(float radius, float x, float y, int id, Color color) 
+        public Circle(float radius, float x, float y, int id, string color) 
             : base(x, y, id, color)
         {
             FirstSide = radius;
@@ -26,17 +25,21 @@ namespace Shapes
             return perimeter;
         }
 
-        public override void Draw(Graphics graphics, float x, float y) 
-            => graphics.DrawEllipse(Pen, x, y, firstSide, firstSide);
+        public override Point[] Draw(float x, float y)
+        {
+            throw new NotImplementedException();
+        }
 
-        public override void Fill(Graphics graphics, float x, float y) 
-            => graphics.FillEllipse(Brush, x, y, firstSide, firstSide);
+        public override Point[] Fill(float x, float y)
+        {
+            throw new NotImplementedException();
+        }
 
         public override bool Contains(Point point)
         {
             return
                 X <= point.X && point.X <= X + firstSide &&
-                Y <= point.Y + 87 && point.Y + 87 <= Y + firstSide;
+                Y <= point.Y + 88 && point.Y + 88 <= Y + firstSide;
         }
     }
 }
