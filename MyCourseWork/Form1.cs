@@ -1,14 +1,11 @@
 ﻿using Shapes;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.IO;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace MyCourseWork
 {
@@ -18,7 +15,6 @@ namespace MyCourseWork
         public int CurrentID { get; set; }
         public string ShapeType { get; set; }
 
-        Color Color { get; set; }
         public Pen Pen { get; set; }
         public List<IDrawable> Shapes { get; set; }
 
@@ -39,7 +35,6 @@ namespace MyCourseWork
             ID = 0;
             ShapeType = string.Empty;
 
-            Color = new Color();
             Pen = new Pen(Color.Black, 2);
             Shapes = new List<IDrawable>();
 
@@ -63,7 +58,8 @@ namespace MyCourseWork
                 switch (ShapeType)
                 {
                     case "Circle":
-                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, flowLayoutPanel1.BackColor.ToString());
+                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID,
+                            flowLayoutPanel1.BackColor.ToArgb().ToString());
                         Command.Item = circle;
                         Shapes.Add(circle);
                         textBox7.Text = circle.Perimeter.ToString();
@@ -72,7 +68,7 @@ namespace MyCourseWork
                     case "Triangle":
                         var triangle = new Triangle(float.Parse(textBox4.Text),
                             float.Parse(textBox6.Text), float.Parse(textBox5.Text),
-                            x, y, ID, flowLayoutPanel1.BackColor.ToString());
+                            x, y, ID, flowLayoutPanel1.BackColor.ToArgb().ToString());
                         Command.Item = triangle;
                         Shapes.Add(triangle);
                         textBox7.Text = triangle.Perimeter.ToString();
@@ -80,7 +76,7 @@ namespace MyCourseWork
                         break;
                     case "Rectangle":
                         var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
-                            float.Parse(textBox3.Text), x, y, ID, flowLayoutPanel1.BackColor.ToString());
+                            float.Parse(textBox3.Text), x, y, ID, flowLayoutPanel1.BackColor.ToArgb().ToString());
                         Command.Item = rectangle;
                         Shapes.Add(rectangle);
                         textBox7.Text = rectangle.Perimeter.ToString();
@@ -111,7 +107,7 @@ namespace MyCourseWork
 
             Command.Name = "Fill";
             Command.Color = Color.FromName(selected.Color);
-            selected.Color = flowLayoutPanel1.BackColor.Name;
+            selected.Color = flowLayoutPanel1.BackColor.ToArgb().ToString();
 
             var type = selected.GetType().Name;
 
@@ -132,6 +128,7 @@ namespace MyCourseWork
                         selected.ThirdSide, selected.X, selected.Y, selected.ID, selected.Color);
                     Command.Item = cloneTriangle;
                     break;
+
                 default:
                     break;
             }
@@ -323,9 +320,9 @@ namespace MyCourseWork
 
             foreach (var shape in Shapes)
             {
-                var type = shape.GetType().Name;
+                Color color = ColorTranslator.FromHtml(shape.Color);
 
-                Color = Color.FromName(shape.Color);
+                var type = shape.GetType().Name;
 
                 switch (type)
                 {
@@ -335,7 +332,7 @@ namespace MyCourseWork
                             Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         }
                         e.Graphics.DrawEllipse(Pen, shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
-                        e.Graphics.FillEllipse(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
+                        e.Graphics.FillEllipse(new SolidBrush(color), shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
                         break;
 
                     case "Rectangle":
@@ -344,7 +341,7 @@ namespace MyCourseWork
                             Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         }
                         e.Graphics.DrawRectangle(Pen, shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
-                        e.Graphics.FillRectangle(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
+                        e.Graphics.FillRectangle(new SolidBrush(color), shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
                         break;
 
                     case "Triangle":
@@ -360,7 +357,7 @@ namespace MyCourseWork
                         pointsF[2] = new PointF(points[2].X, points[2].Y);
 
                         e.Graphics.DrawPolygon(Pen, pointsF);
-                        e.Graphics.FillPolygon(new SolidBrush(Color), pointsF);
+                        e.Graphics.FillPolygon(new SolidBrush(color), pointsF);
                         break;
 
                     default:

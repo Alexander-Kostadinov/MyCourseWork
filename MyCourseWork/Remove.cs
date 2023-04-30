@@ -1,10 +1,6 @@
-﻿using System;
-using Shapes;
-using System.Collections.Generic;
+﻿using Shapes;
 using System.Linq;
-using System.Drawing;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace MyCourseWork
 {

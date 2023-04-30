@@ -1,10 +1,7 @@
 ﻿using System;
 using Shapes;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace MyCourseWork
 {
@@ -15,9 +12,9 @@ namespace MyCourseWork
         public string Name { get; set; }
         public Color Color { get; set; }
         public IDrawable Item { get; set; }
-        public List<IDrawable> Shapes { get; set; }
-        public List<Command> UndoCommands { get; set; }
-        public List<Command> RedoCommands { get; set; }
+        protected List<IDrawable> Shapes { get; set; }
+        protected List<Command> UndoCommands { get; set; }
+        protected List<Command> RedoCommands { get; set; }
 
         public virtual void Execute()
         {
