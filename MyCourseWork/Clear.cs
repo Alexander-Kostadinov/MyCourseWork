@@ -6,8 +6,7 @@ namespace MyCourseWork
 {
     public class Clear : Command
     {
-        public Clear(List<Command> undoCommands, List<Command> redoCommands, 
-            List<IDrawable> shapes)
+        public Clear(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes)
         {
             Shapes = shapes;
             UndoCommands = undoCommands;

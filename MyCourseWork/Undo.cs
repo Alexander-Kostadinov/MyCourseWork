@@ -29,7 +29,7 @@ namespace MyCourseWork
                     break;
                 case "Fill":
                     var colorToChange = Shapes.Where(x =>
-                    x.ID == lastCommand.Item.ID|| x.ID == lastCommand.Item.ID * -1).FirstOrDefault();
+                    x.ID == lastCommand.Item.ID || x.ID == lastCommand.Item.ID * -1).FirstOrDefault();
 
                     if (colorToChange == null)
                     {

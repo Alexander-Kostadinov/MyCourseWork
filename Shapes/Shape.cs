@@ -42,6 +42,7 @@ namespace Shapes
                 secondSide = value;
             }
         }
+
         public float ThirdSide
         {
             get => thirdSide;
@@ -57,6 +58,11 @@ namespace Shapes
             }
         }
 
+        public int ID
+        {
+            get => id;
+            set => id = value;
+        }
         public float X
         {
             get => x;
@@ -66,11 +72,6 @@ namespace Shapes
         {
             get => y;
             set => y = value;
-        }
-        public int ID 
-        {
-            get => id;
-            set => id = value;
         }
 
         public string Color { get; set; }

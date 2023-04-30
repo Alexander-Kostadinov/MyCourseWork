@@ -14,7 +14,6 @@
 
         double CalculateSurface();
         double CalculatePerimeter();
-
         bool Contains(Point point);
         Point[] Draw(float x, float y);
         Point[] Fill(float x, float y);

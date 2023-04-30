@@ -6,15 +6,14 @@ namespace MyCourseWork
 {
     public class Remove : Command
     {
-        public Command Command { get; set; }
+        private Command Command { get; set; }
 
-        public Remove(List<Command> undoCommands, List<Command> redoCommands,
-            List<IDrawable> shapes)
+        public Remove(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes)
         {
             Shapes = shapes;
-            Command = new Command();
             UndoCommands = undoCommands;
             RedoCommands = redoCommands;
+            Command = new Command();
         }
 
         public override void Execute()
