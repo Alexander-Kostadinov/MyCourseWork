@@ -39,10 +39,12 @@ namespace MyCourseWork
             Pen = new Pen(Color.Black, 2);
             Shapes = new List<IDrawable>();
 
-            Command = new Command();
             Serializer = new Serializer();
+
+            Command = new Command();
             UndoCommands = new List<Command>();
             RedoCommands = new List<Command>();
+
             Undo = new Undo(UndoCommands, RedoCommands, Shapes);
             Redo = new Redo(UndoCommands, RedoCommands, Shapes);
             Clear = new Clear(UndoCommands, RedoCommands, Shapes);
@@ -314,27 +316,27 @@ namespace MyCourseWork
                     {
                         case "Circle":
                             var cloneCircle = new Circle(shape.FirstSide, shape.X, shape.Y, shape.ID, shape.Color);
-                            Command.Item = cloneCircle;
                             RedoCommands.Clear();
                             Command.Name = "Move";
+                            Command.Item = cloneCircle;
                             UndoCommands.Add(Command);
                             break;
 
                         case "Rectangle":
                             var cloneRectangle = new Shapes.Rectangle(shape.FirstSide,
                                 shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
-                            Command.Item = cloneRectangle;
                             RedoCommands.Clear();
                             Command.Name = "Move";
+                            Command.Item = cloneRectangle;
                             UndoCommands.Add(Command);
                             break;
 
                         case "Triangle":
                             var cloneTriangle = new Triangle(shape.FirstSide,
                                 shape.SecondSide, shape.ThirdSide, shape.X, shape.Y, shape.ID, shape.Color);
-                            Command.Item = cloneTriangle;
                             RedoCommands.Clear();
                             Command.Name = "Move";
+                            Command.Item = cloneTriangle;
                             UndoCommands.Add(Command);
                             break;
 
@@ -343,6 +345,7 @@ namespace MyCourseWork
                     }
 
                     Command = new Command();
+
                     Refresh();
                     break;
 
