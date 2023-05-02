@@ -21,14 +21,15 @@ namespace Shapes
             return perimeter;
         }
 
-        public override Point[] Draw(float x, float y)
+        public override Point[] GetPoints(float x, float y)
         {
-            throw new NotImplementedException();
-        }
+            Point pointA = new Point((int)x, (int)y);
+            Point pointB = new Point((int)(x + firstSide), (int)y);
+            Point pointC = new Point((int)(x + firstSide), (int)(y + firstSide));
+            Point pointD = new Point((int)x, (int)(y + firstSide));
 
-        public override Point[] Fill(float x, float y)
-        {
-            throw new NotImplementedException();
+            Point[] points = new Point[] { pointA, pointB, pointC, pointD };
+            return points;
         }
 
         public override bool Contains(Point point)

@@ -17,8 +17,9 @@ namespace MyCourseWork
         public string ShapeType { get; set; }
         public List<IDrawable> Shapes { get; set; }
 
-        public Command Command { get; set; }
         public Serializer Serializer { get; set; }
+
+        public Command Command { get; set; }
         public List<Command> UndoCommands { get; set; }
         public List<Command> RedoCommands { get; set; }
 
@@ -51,6 +52,7 @@ namespace MyCourseWork
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
         {
             y += panel1.Location.Y;
+            Color = Color.Transparent;
 
             try
             {
@@ -59,10 +61,10 @@ namespace MyCourseWork
                     case "Circle":
                         ID++;
                         var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, Color.ToArgb().ToString());
-                        Command.Item = circle;
                         Shapes.Add(circle);
                         RedoCommands.Clear();
                         Command.Name = "Add";
+                        Command.Item = circle;
                         UndoCommands.Add(Command);
                         textBox7.Text = circle.Perimeter.ToString();
                         textBox8.Text = circle.Surface.ToString();
@@ -72,10 +74,10 @@ namespace MyCourseWork
                         ID++;
                         var triangle = new Triangle(float.Parse(textBox4.Text),
                             float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, Color.ToArgb().ToString());
-                        Command.Item = triangle;
                         Shapes.Add(triangle);
                         RedoCommands.Clear();
                         Command.Name = "Add";
+                        Command.Item = triangle;
                         UndoCommands.Add(Command);
                         textBox7.Text = triangle.Perimeter.ToString();
                         textBox8.Text = triangle.Surface.ToString();
@@ -85,10 +87,10 @@ namespace MyCourseWork
                         ID++;
                         var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
                             float.Parse(textBox3.Text), x, y, ID, Color.ToArgb().ToString());
-                        Command.Item = rectangle;
                         Shapes.Add(rectangle);
                         RedoCommands.Clear();
                         Command.Name = "Add";
+                        Command.Item = rectangle;
                         UndoCommands.Add(Command);
                         textBox7.Text = rectangle.Perimeter.ToString();
                         textBox8.Text = rectangle.Surface.ToString();
@@ -303,6 +305,11 @@ namespace MyCourseWork
                     shape.ID = CurrentID;
                     CurrentID = 0;
 
+                    if (shape.X == Command.X && shape.Y == Command.Y)
+                    {
+                        return;
+                    }
+
                     switch (type)
                     {
                         case "Circle":
@@ -379,7 +386,7 @@ namespace MyCourseWork
                         {
                             Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         }
-                        var points = shape.Draw(shape.X, shape.Y);
+                        var points = shape.GetPoints(shape.X, shape.Y);
 
                         var pointsF = new PointF[3];
                         pointsF[0] = new PointF(points[0].X, points[0].Y);
@@ -394,7 +401,6 @@ namespace MyCourseWork
                         break;
                 }
 
-                Color = Color.Transparent;
                 Pen = new Pen(Color.Black, 2);
             }
         }

@@ -41,32 +41,7 @@ namespace Shapes
             return perimeter;
         }
 
-        public override Point[] Draw(float x, float y)
-        {
-            var h = 2 * Surface / thirdSide;
-            var distanceToA = Math.Sqrt((secondSide * secondSide) - (h * h));
-            var distanceToB = Math.Sqrt((firstSide * firstSide) - (h * h));
-            var pointC = new Point((int)x, (int)y);
-            var pointA = new Point((int)(x - distanceToA), (int)(y + h));
-            var pointB = new Point((int)(x + distanceToB), (int)(y + h));
-
-            if (firstSide > thirdSide && firstSide > secondSide)
-            {
-                pointA.X = (int)(X + distanceToA);
-                pointB.X = (int)(pointA.X + thirdSide);
-            }
-            else if (secondSide > thirdSide && secondSide > firstSide)
-            {
-                pointB.X = (int)(X - distanceToB);
-                pointA.X = (int)(pointB.X - thirdSide);
-            }
-
-            var points = new Point[] { pointA, pointB, pointC };
-
-            return points;
-        }
-
-        public override Point[] Fill(float x, float y)
+        public override Point[] GetPoints(float x, float y)
         {
             var h = 2 * Surface / thirdSide;
             var distanceToA = Math.Sqrt((secondSide * secondSide) - (h * h));

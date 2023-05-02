@@ -90,7 +90,6 @@ namespace Shapes
         public abstract double CalculateSurface();
         public abstract double CalculatePerimeter();
         public abstract bool Contains(Point point);
-        public abstract Point[] Draw(float x, float y);
-        public abstract Point[] Fill(float x, float y);
+        public abstract Point[] GetPoints(float x, float y);
     }
 }
