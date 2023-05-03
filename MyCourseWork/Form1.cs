@@ -11,37 +11,32 @@ namespace MyCourseWork
     public partial class Form1 : Form
     {
         Color Color { get; set; }
-        public int ID { get; set; }
-        public Pen Pen { get; set; }
-        public int CurrentID { get; set; }
-        public string ShapeType { get; set; }
-        public List<IDrawable> Shapes { get; set; }
+        private int ID { get; set; }
+        private Pen Pen { get; set; }
+        private string ShapeType { get; set; }
+        private Serializer Serializer { get; set; }
+        private List<IDrawable> Shapes { get; set; }
+        private List<Command> UndoCommands { get; set; }
+        private List<Command> RedoCommands { get; set; }
 
-        public Serializer Serializer { get; set; }
-
-        public Command Command { get; set; }
-        public List<Command> UndoCommands { get; set; }
-        public List<Command> RedoCommands { get; set; }
-
-        Undo Undo { get; set; }
-        Redo Redo { get; set; }
-        Clear Clear { get; set; }
-        Remove Remove { get; set; }
+        private Add Add { get; set; }
+        private Fill Fill { get; set; }
+        private Undo Undo { get; set; }
+        private Redo Redo { get; set; }
+        private Clear Clear { get; set; }
+        private Remove Remove { get; set; }
+        private Moving Moving { get; set; }
 
         public Form1()
         {
             InitializeComponent();
 
             ID = 0;
-            CurrentID = 0;
             ShapeType = string.Empty;
             Color = Color.Transparent;
             Pen = new Pen(Color.Black, 2);
-            Shapes = new List<IDrawable>();
-
             Serializer = new Serializer();
-
-            Command = new Command();
+            Shapes = new List<IDrawable>();
             UndoCommands = new List<Command>();
             RedoCommands = new List<Command>();
 
@@ -49,6 +44,7 @@ namespace MyCourseWork
             Redo = new Redo(UndoCommands, RedoCommands, Shapes);
             Clear = new Clear(UndoCommands, RedoCommands, Shapes);
             Remove = new Remove(UndoCommands, RedoCommands, Shapes);
+            Moving = new Moving(UndoCommands, RedoCommands, Shapes);
         }
 
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
@@ -63,99 +59,42 @@ namespace MyCourseWork
                     case "Circle":
                         ID++;
                         var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, Color.ToArgb().ToString());
-                        Shapes.Add(circle);
-                        RedoCommands.Clear();
-                        Command.Name = "Add";
-                        Command.Item = circle;
-                        UndoCommands.Add(Command);
-                        textBox7.Text = circle.Perimeter.ToString();
-                        textBox8.Text = circle.Surface.ToString();
+                        Add = new Add(UndoCommands, RedoCommands, Shapes, circle);
+                        Add.Execute();
                         break;
 
                     case "Triangle":
                         ID++;
                         var triangle = new Triangle(float.Parse(textBox4.Text),
                             float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, Color.ToArgb().ToString());
-                        Shapes.Add(triangle);
-                        RedoCommands.Clear();
-                        Command.Name = "Add";
-                        Command.Item = triangle;
-                        UndoCommands.Add(Command);
-                        textBox7.Text = triangle.Perimeter.ToString();
-                        textBox8.Text = triangle.Surface.ToString();
+                        Add = new Add(UndoCommands, RedoCommands, Shapes, triangle);
+                        Add.Execute();
                         break;
 
                     case "Rectangle":
                         ID++;
                         var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
                             float.Parse(textBox3.Text), x, y, ID, Color.ToArgb().ToString());
-                        Shapes.Add(rectangle);
-                        RedoCommands.Clear();
-                        Command.Name = "Add";
-                        Command.Item = rectangle;
-                        UndoCommands.Add(Command);
-                        textBox7.Text = rectangle.Perimeter.ToString();
-                        textBox8.Text = rectangle.Surface.ToString();
+                        Add = new Add(UndoCommands, RedoCommands, Shapes, rectangle);
+                        Add.Execute();
                         break;
 
                     default:
                         break;
                 }
 
-                Command = new Command();
+                Refresh();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
-            Refresh();
         }
 
         private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
         {
-            var selected = Shapes.Where(x => x.ID < 0).FirstOrDefault();
-
-            if (selected == null)
-            {
-                return;
-            }
-
-            Command.Name = "Fill";
-            Command.Color = Color.FromName(selected.Color);
-            Color = flowLayoutPanel1.BackColor;
-            selected.Color = Color.ToArgb().ToString();
-
-            var type = selected.GetType().Name;
-
-            switch (type)
-            {
-                case "Circle":
-                    var cloneCircle = new Circle(selected.FirstSide,
-                        selected.X, selected.Y, selected.ID, selected.Color);
-                    Command.Item = cloneCircle;
-                    break;
-
-                case "Rectangle":
-                    var cloneRectangle = new Shapes.Rectangle(selected.FirstSide,
-                        selected.SecondSide, selected.X, selected.Y, selected.ID, selected.Color);
-                    Command.Item = cloneRectangle;
-                    break;
-
-                case "Triangle":
-                    var cloneTriangle = new Triangle(selected.FirstSide, selected.SecondSide,
-                        selected.ThirdSide, selected.X, selected.Y, selected.ID, selected.Color);
-                    Command.Item = cloneTriangle;
-                    break;
-
-                default:
-                    break;
-            }
-
-            RedoCommands.Clear();
-            UndoCommands.Add(Command);
-            Command = new Command();
-
+            Fill = new Fill(UndoCommands, RedoCommands, Shapes, flowLayoutPanel1.BackColor);
+            Fill.Execute();
             Refresh();
         }
 
@@ -244,20 +183,8 @@ namespace MyCourseWork
             switch (e.Button)
             {
                 case MouseButtons.Right:
-
                     var point = new Shapes.Point(e.Location.X, e.Location.Y);
-
-                    var shape = Shapes.Where(x => x.Contains(point)).LastOrDefault();
-
-                    if (shape == null)
-                    {
-                        return;
-                    }
-
-                    CurrentID = shape.ID;
-                    shape.ID = 0;
-                    Command.X = (int)shape.X;
-                    Command.Y = (int)shape.Y;
+                    Moving.PreExecute(point);
                     break;
             }
         }
@@ -294,58 +221,7 @@ namespace MyCourseWork
             switch (e.Button)
             {
                 case MouseButtons.Right:
-
-                    var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
-
-                    if (shape == null)
-                    {
-                        return;
-                    }
-
-                    var type = shape.GetType().Name;
-
-                    shape.ID = CurrentID;
-                    CurrentID = 0;
-
-                    if (shape.X == Command.X && shape.Y == Command.Y)
-                    {
-                        return;
-                    }
-
-                    switch (type)
-                    {
-                        case "Circle":
-                            var cloneCircle = new Circle(shape.FirstSide, shape.X, shape.Y, shape.ID, shape.Color);
-                            RedoCommands.Clear();
-                            Command.Name = "Move";
-                            Command.Item = cloneCircle;
-                            UndoCommands.Add(Command);
-                            break;
-
-                        case "Rectangle":
-                            var cloneRectangle = new Shapes.Rectangle(shape.FirstSide,
-                                shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
-                            RedoCommands.Clear();
-                            Command.Name = "Move";
-                            Command.Item = cloneRectangle;
-                            UndoCommands.Add(Command);
-                            break;
-
-                        case "Triangle":
-                            var cloneTriangle = new Triangle(shape.FirstSide,
-                                shape.SecondSide, shape.ThirdSide, shape.X, shape.Y, shape.ID, shape.Color);
-                            RedoCommands.Clear();
-                            Command.Name = "Move";
-                            Command.Item = cloneTriangle;
-                            UndoCommands.Add(Command);
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    Command = new Command();
-
+                    Moving.Execute();
                     Refresh();
                     break;
 

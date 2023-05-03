@@ -4,17 +4,10 @@ using System.Collections.Generic;
 
 namespace MyCourseWork
 {
-    public class Remove : Command
+    public class Remove : Commands
     {
-        private Command Command { get; set; }
-
         public Remove(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes)
-        {
-            Shapes = shapes;
-            UndoCommands = undoCommands;
-            RedoCommands = redoCommands;
-            Command = new Command();
-        }
+            : base(undoCommands, redoCommands, shapes) { }
 
         public override void Execute()
         {
@@ -30,15 +23,16 @@ namespace MyCourseWork
                 return;
             }
 
+            selected.ID *= -1;
+
             Command.Name = "Remove";
             Command.Item = selected;
 
             RedoCommands.Clear();
             UndoCommands.Add(Command);
+            Shapes.Remove(selected);
 
             Command = new Command();
-
-            Shapes.Remove(selected);
         }
     }
 }

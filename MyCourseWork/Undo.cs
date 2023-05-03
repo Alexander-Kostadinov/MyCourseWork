@@ -4,14 +4,10 @@ using System.Collections.Generic;
 
 namespace MyCourseWork
 {
-    public class Undo : Command
+    public class Undo : Commands
     {
-        public Undo(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes)
-        {
-            Shapes = shapes;
-            UndoCommands = undoCommands;
-            RedoCommands = redoCommands;
-        }
+        public Undo(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes) 
+            : base(undoCommands, redoCommands, shapes) { }
 
         public override void Execute()
         {
