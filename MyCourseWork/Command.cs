@@ -1,14 +1,20 @@
 ﻿using Shapes;
-using System.Drawing;
+using System.Collections.Generic;
 
 namespace MyCourseWork
 {
-    public class Command
+    public abstract class Command : ICommand
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public string Name { get; set; }
-        public Color Color { get; set; }
-        public IDrawable Item { get; set; }
+        protected IDrawable Shape { get; set; }
+        protected List<IDrawable> Shapes { get; set; }
+
+        protected Command(IDrawable shape, List<IDrawable> shapes)
+        {
+            Shape = shape;
+            Shapes = shapes;
+        }
+
+        public abstract void Execute();
+        public abstract void UndoExecute();
     }
 }

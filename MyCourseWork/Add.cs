@@ -3,25 +3,17 @@ using System.Collections.Generic;
 
 namespace MyCourseWork
 {
-    public class Add : Commands
+    public class Add : Command
     {
-        private IDrawable Shape { get; set; }
-
-        public Add(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes, IDrawable shape) 
-            : base(undoCommands, redoCommands, shapes)
-        {
-            Shape = shape;
-        }
+        public Add(IDrawable shape, List<IDrawable> shapes) : base(shape, shapes) { }
 
         public override void Execute()
         {
             Shapes.Add(Shape);
-            RedoCommands.Clear();
-            Command.Name = "Add";
-            Command.Item = Shape;
-            UndoCommands.Add(Command);
-
-            Command = new Command();
+        }
+        public override void UndoExecute()
+        {
+            Shapes.Remove(Shape);
         }
     }
 }

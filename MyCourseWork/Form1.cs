@@ -10,41 +10,35 @@ namespace MyCourseWork
 {
     public partial class Form1 : Form
     {
+        private Add Add { get; set; }
+        private Fill Fill { get; set; }
+        private Clear Clear { get; set; }
+        private Moving Moving { get; set; }
+        private Remove Remove { get; set; }
+
         Color Color { get; set; }
         private int ID { get; set; }
         private Pen Pen { get; set; }
+        private int CurrentID { get; set; }
         private string ShapeType { get; set; }
         private Serializer Serializer { get; set; }
         private List<IDrawable> Shapes { get; set; }
-        private List<Command> UndoCommands { get; set; }
-        private List<Command> RedoCommands { get; set; }
-
-        private Add Add { get; set; }
-        private Fill Fill { get; set; }
-        private Undo Undo { get; set; }
-        private Redo Redo { get; set; }
-        private Clear Clear { get; set; }
-        private Remove Remove { get; set; }
-        private Moving Moving { get; set; }
+        private List<ICommand> UndoCommands { get; set; }
+        private List<ICommand> RedoCommands { get; set; }
 
         public Form1()
         {
             InitializeComponent();
 
             ID = 0;
+            CurrentID = 0;
             ShapeType = string.Empty;
             Color = Color.Transparent;
             Pen = new Pen(Color.Black, 2);
             Serializer = new Serializer();
             Shapes = new List<IDrawable>();
-            UndoCommands = new List<Command>();
-            RedoCommands = new List<Command>();
-
-            Undo = new Undo(UndoCommands, RedoCommands, Shapes);
-            Redo = new Redo(UndoCommands, RedoCommands, Shapes);
-            Clear = new Clear(UndoCommands, RedoCommands, Shapes);
-            Remove = new Remove(UndoCommands, RedoCommands, Shapes);
-            Moving = new Moving(UndoCommands, RedoCommands, Shapes);
+            UndoCommands = new List<ICommand>();
+            RedoCommands = new List<ICommand>();
         }
 
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
@@ -59,24 +53,30 @@ namespace MyCourseWork
                     case "Circle":
                         ID++;
                         var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, Color.ToArgb().ToString());
-                        Add = new Add(UndoCommands, RedoCommands, Shapes, circle);
+                        Add = new Add(circle, Shapes);
                         Add.Execute();
+                        UndoCommands.Add(Add);
+                        RedoCommands.Clear();
                         break;
 
                     case "Triangle":
                         ID++;
                         var triangle = new Triangle(float.Parse(textBox4.Text),
                             float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, Color.ToArgb().ToString());
-                        Add = new Add(UndoCommands, RedoCommands, Shapes, triangle);
+                        Add = new Add(triangle, Shapes);
                         Add.Execute();
+                        UndoCommands.Add(Add);
+                        RedoCommands.Clear();
                         break;
 
                     case "Rectangle":
                         ID++;
                         var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
                             float.Parse(textBox3.Text), x, y, ID, Color.ToArgb().ToString());
-                        Add = new Add(UndoCommands, RedoCommands, Shapes, rectangle);
+                        Add = new Add(rectangle, Shapes);
                         Add.Execute();
+                        UndoCommands.Add(Add);
+                        RedoCommands.Clear();
                         break;
 
                     default:
@@ -93,8 +93,22 @@ namespace MyCourseWork
 
         private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
         {
-            Fill = new Fill(UndoCommands, RedoCommands, Shapes, flowLayoutPanel1.BackColor);
+            var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
+
+            if (selected == null)
+            {
+                return;
+            }
+
+            if (selected.Color == flowLayoutPanel1.BackColor.ToArgb().ToString())
+            {
+                return;
+            }
+
+            Fill = new Fill(selected, Shapes, flowLayoutPanel1.BackColor);
             Fill.Execute();
+            UndoCommands.Add(Fill);
+            RedoCommands.Clear();
             Refresh();
         }
 
@@ -183,8 +197,18 @@ namespace MyCourseWork
             switch (e.Button)
             {
                 case MouseButtons.Right:
+
                     var point = new Shapes.Point(e.Location.X, e.Location.Y);
-                    Moving.PreExecute(point);
+                    var shape = Shapes.Where(x => x.Contains(point)).LastOrDefault();
+
+                    if (shape == null)
+                    {
+                        return;
+                    }
+
+                    Moving = new Moving(shape, Shapes, (int)shape.X, (int)shape.Y);
+                    CurrentID = shape.ID;
+                    shape.ID = 0;
                     break;
             }
         }
@@ -221,7 +245,26 @@ namespace MyCourseWork
             switch (e.Button)
             {
                 case MouseButtons.Right:
+                    var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
+
+                    if (shape == null)
+                    {
+                        return;
+                    }
+
+                    shape.ID = CurrentID;
+                    CurrentID = 0;
+
+                    if (shape.X == Moving.X && shape.Y == Moving.Y)
+                    {
+                        return;
+                    }
+
+                    Moving.X = e.X;
+                    Moving.Y = e.Y + 88;
                     Moving.Execute();
+                    UndoCommands.Add(Moving);
+                    RedoCommands.Clear();
                     Refresh();
                     break;
 
@@ -265,8 +308,8 @@ namespace MyCourseWork
                         {
                             Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         }
-                        var points = shape.GetPoints(shape.X, shape.Y);
 
+                        var points = shape.GetPoints(shape.X, shape.Y);
                         var pointsF = new PointF[3];
                         pointsF[0] = new PointF(points[0].X, points[0].Y);
                         pointsF[1] = new PointF(points[1].X, points[1].Y);
@@ -291,6 +334,7 @@ namespace MyCourseWork
 
             if (confirmResult == DialogResult.Yes)
             {
+                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands);
                 Clear.Execute();
                 textBox1.Text = string.Empty;
                 textBox2.Text = string.Empty;
@@ -309,19 +353,50 @@ namespace MyCourseWork
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Redo.Execute();
+            var command = RedoCommands.LastOrDefault();
+
+            if (command == null)
+            {
+                return;
+            }
+
+            command.Execute();
+
+            UndoCommands.Add(command);
+            RedoCommands.Remove(command);
             Refresh();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Undo.Execute();
+            var command = UndoCommands.LastOrDefault();
+
+            if (command == null)
+            {
+                return;
+            }
+
+            command.UndoExecute();
+
+            RedoCommands.Add(command);
+            UndoCommands.Remove(command);
             Refresh();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
+
+            if (selected == null)
+            {
+                return;
+            }
+
+            selected.ID *= -1;
+            Remove = new Remove(selected, Shapes);
             Remove.Execute();
+            UndoCommands.Add(Remove);
+            RedoCommands.Clear();
             Refresh();
         }
 
@@ -341,7 +416,7 @@ namespace MyCourseWork
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Serializer.Deserialize(Shapes, UndoCommands, RedoCommands, ID);
+            Serializer.Deserialize(Shapes, ID);
 
             if (Shapes.Count() > 0)
             {

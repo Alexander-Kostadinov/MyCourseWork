@@ -61,7 +61,7 @@ namespace MyCourseWork
                 }
             }
         }
-        public void Deserialize(List<IDrawable> Shapes, List<Command> UndoCommands, List<Command> RedoCommands, int ID)
+        public void Deserialize(List<IDrawable> Shapes, int ID)
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "*.txt|";
@@ -85,18 +85,7 @@ namespace MyCourseWork
 
                         var type = line.Split(' ').ToArray();
 
-                        ids = Shapes.Select(x => x.ID).
-                            Concat(UndoCommands.Select(x => x.Item.ID)).
-                            Concat(RedoCommands.Select(x => x.Item.ID)).ToList();
-
-                        if (ids != null && ids.Contains(int.Parse(type[2])))
-                        {
-                            ID = ids.OrderBy(x => x).Reverse().First();
-                            ID++;
-
-                            type[2] = ID.ToString();
-                        }
-                        else if (ids != null && ID <= int.Parse(type[2]))
+                        if (ID <= int.Parse(type[2]))
                         {
                             ID++;
                             type[2] = ID.ToString();

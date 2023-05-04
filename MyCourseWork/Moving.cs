@@ -1,82 +1,34 @@
 ﻿using Shapes;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace MyCourseWork
 {
-    public class Moving : Commands
+    public class Moving : Command
     {
-        private int currentID;
+        public int X { get; set; }
+        public int Y { get; set; }
 
-        public int CurrentID { get { return currentID; } private set { currentID = value; } }
+        private int BeforeX { get; set; }
+        private int BeforeY { get; set; }
 
-        public Moving(List<Command> undoCommands, List<Command> redoCommands, List<IDrawable> shapes)
-            : base(undoCommands, redoCommands, shapes) { }
+        public Moving(IDrawable shape, List<IDrawable> shapes, int x, int y) 
+            : base(shape, shapes)
+        {
+            X = x;
+            Y = y;
+            BeforeX = x;
+            BeforeY = Y;
+        }
 
         public override void Execute()
         {
-            var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
-
-            if (shape == null)
-            {
-                return;
-            }
-
-            var type = shape.GetType().Name;
-
-            shape.ID = CurrentID;
-            CurrentID = 0;
-
-            if (shape.X == Command.X && shape.Y == Command.Y)
-            {
-                return;
-            }
-
-            switch (type)
-            {
-                case "Circle":
-                    var cloneCircle = new Circle(shape.FirstSide, shape.X, shape.Y, shape.ID, shape.Color);
-                    RedoCommands.Clear();
-                    Command.Name = "Move";
-                    Command.Item = cloneCircle;
-                    UndoCommands.Add(Command);
-                    break;
-
-                case "Rectangle":
-                    var cloneRectangle = new Rectangle(shape.FirstSide,
-                        shape.SecondSide, shape.X, shape.Y, shape.ID, shape.Color);
-                    RedoCommands.Clear();
-                    Command.Name = "Move";
-                    Command.Item = cloneRectangle;
-                    UndoCommands.Add(Command);
-                    break;
-
-                case "Triangle":
-                    var cloneTriangle = new Triangle(shape.FirstSide,
-                        shape.SecondSide, shape.ThirdSide, shape.X, shape.Y, shape.ID, shape.Color);
-                    RedoCommands.Clear();
-                    Command.Name = "Move";
-                    Command.Item = cloneTriangle;
-                    UndoCommands.Add(Command);
-                    break;
-            }
-
-            Command = new Command();
+            Shape.X = X;
+            Shape.Y = Y;
         }
-
-        public void PreExecute(Point point)
+        public override void UndoExecute()
         {
-            var shape = Shapes.Where(x => x.Contains(point)).LastOrDefault();
-
-            if (shape == null)
-            {
-                return;
-            }
-
-            currentID = shape.ID;
-            shape.ID = 0;
-            Command.X = (int)shape.X;
-            Command.Y = (int)shape.Y;
+            Shape.X = BeforeX;
+            Shape.Y = BeforeY;
         }
     }
 }
