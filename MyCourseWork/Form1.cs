@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MyCourseWork
 {
@@ -21,10 +22,10 @@ namespace MyCourseWork
         private Pen Pen { get; set; }
         private int CurrentID { get; set; }
         private string ShapeType { get; set; }
-        private Serializer Serializer { get; set; }
         private List<IDrawable> Shapes { get; set; }
         private List<ICommand> UndoCommands { get; set; }
         private List<ICommand> RedoCommands { get; set; }
+        private List<ISerializable> Serializables { get; set; }
 
         public Form1()
         {
@@ -35,10 +36,10 @@ namespace MyCourseWork
             ShapeType = string.Empty;
             Color = Color.Transparent;
             Pen = new Pen(Color.Black, 2);
-            Serializer = new Serializer();
             Shapes = new List<IDrawable>();
             UndoCommands = new List<ICommand>();
             RedoCommands = new List<ICommand>();
+            Serializables = new List<ISerializable>();
         }
 
         private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
@@ -334,7 +335,7 @@ namespace MyCourseWork
 
             if (confirmResult == DialogResult.Yes)
             {
-                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands);
+                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands, Serializables);
                 Clear.Execute();
                 textBox1.Text = string.Empty;
                 textBox2.Text = string.Empty;
@@ -411,20 +412,77 @@ namespace MyCourseWork
 
         private void button6_Click(object sender, EventArgs e)
         {
-            Serializer.Serialize(Shapes);
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.Filter = "*.txt|";
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string docPath = Directory.GetCurrentDirectory();
+
+                    using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, saveFile.FileName)))
+                    {
+                        var circles = new SerializeCircle(Shapes, string.Empty);
+                        var triangles = new SerializeTriangle(Shapes, string.Empty);
+                        var rectangles = new SerializeRectangle(Shapes, string.Empty);
+
+                        Serializables.Add(circles);
+                        Serializables.Add(triangles);
+                        Serializables.Add(rectangles);
+
+                        foreach (var shape in Serializables)
+                        {
+                            outputFile.Write(shape.Serialize());
+                        }
+                    }
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    MessageBox.Show("Directory not found.");
+                }
+                catch
+                {
+                    MessageBox.Show("Error!");
+                }
+            }
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Serializer.Deserialize(Shapes, ID);
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter = "*.txt|";
 
-            if (Shapes.Count() > 0)
+            if (openFile.ShowDialog() == DialogResult.OK)
             {
-                var nextId = Shapes.Select(x => x.ID).ToArray().OrderByDescending(x => x).FirstOrDefault();
-                ID = nextId;
-            }
+                try
+                {
+                    StreamReader reader = new StreamReader(openFile.FileName);
 
-            Refresh();
+                    var text = reader.ReadToEnd();
+
+                    var circles = new SerializeCircle(Shapes, text);
+                    var triangles = new SerializeTriangle(Shapes, text);
+                    var rectangles = new SerializeRectangle(Shapes, text);
+
+                    Serializables.Add(circles);
+                    Serializables.Add(triangles);
+                    Serializables.Add(rectangles);
+
+                    foreach (var shape in Serializables)
+                    {
+                        shape.Deserialize();
+                    }
+
+                    Refresh();
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
