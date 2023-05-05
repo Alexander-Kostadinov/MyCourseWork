@@ -3,9 +3,9 @@ using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
 
-namespace MyCourseWork
+namespace Serialization
 {
-    public class SerializeRectangle : Serializable
+    public class SerializeRectangle : Serializer
     {
         public SerializeRectangle(List<IDrawable> shapes, string text) : base(shapes, text) { }
 

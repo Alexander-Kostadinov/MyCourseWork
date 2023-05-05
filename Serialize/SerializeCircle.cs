@@ -3,9 +3,9 @@ using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
 
-namespace MyCourseWork
+namespace Serialization
 {
-    public class SerializeCircle : Serializable
+    public class SerializeCircle : Serializer
     {
         public SerializeCircle(List<IDrawable> shapes, string text) : base(shapes, text) { }
 

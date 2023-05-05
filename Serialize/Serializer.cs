@@ -1,14 +1,14 @@
 ﻿using Shapes;
 using System.Collections.Generic;
 
-namespace MyCourseWork
+namespace Serialization
 {
-    public abstract class Serializable : ISerializable
+    public abstract class Serializer : ISerializable
     {
         protected string Text { get; set; }
         protected List<IDrawable> Shapes { get; set; }
 
-        protected Serializable(List<IDrawable> shapes, string text)
+        protected Serializer(List<IDrawable> shapes, string text)
         {
             Text = text;
             Shapes = shapes;

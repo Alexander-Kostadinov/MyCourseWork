@@ -1,5 +1,5 @@
 ﻿
-namespace MyCourseWork
+namespace Serialization
 {
     public interface ISerializable
     {
