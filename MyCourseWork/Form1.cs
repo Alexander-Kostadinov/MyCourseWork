@@ -436,6 +436,8 @@ namespace MyCourseWork
                         {
                             outputFile.Write(shape.Serialize());
                         }
+
+                        Serializables.Clear();
                     }
                 }
                 catch (DirectoryNotFoundException)
@@ -482,6 +484,7 @@ namespace MyCourseWork
                     }
 
                     serialized.Clear();
+                    Serializables.Clear();
 
                     Refresh();
                     reader.Close();
