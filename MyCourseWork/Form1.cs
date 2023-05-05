@@ -461,9 +461,10 @@ namespace MyCourseWork
 
                     var text = reader.ReadToEnd();
 
-                    var circles = new SerializeCircle(Shapes, text);
-                    var triangles = new SerializeTriangle(Shapes, text);
-                    var rectangles = new SerializeRectangle(Shapes, text);
+                    var serialized = new List<IDrawable>();
+                    var circles = new SerializeCircle(serialized, text);
+                    var triangles = new SerializeTriangle(serialized, text);
+                    var rectangles = new SerializeRectangle(serialized, text);
 
                     Serializables.Add(circles);
                     Serializables.Add(triangles);
@@ -473,6 +474,13 @@ namespace MyCourseWork
                     {
                         shape.Deserialize();
                     }
+
+                    foreach (var shape in serialized)
+                    {
+                        Shapes.Add(shape);
+                    }
+
+                    serialized.Clear();
 
                     Refresh();
                     reader.Close();
