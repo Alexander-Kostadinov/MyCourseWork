@@ -34,6 +34,7 @@ namespace Serialization
                 {
                     Circle circle = new Circle(float.Parse(shape[8]), float.Parse(shape[4]), float.Parse(shape[6]), 
                         int.Parse(shape[2]), Color.FromName(shape[10]).Name);
+
                     Shapes.Add(circle);
                 }
             }

@@ -87,17 +87,17 @@ namespace Shapes
 
             bool result = false;
 
-            if (point.Y + 88 < pointA.Y && point.Y + 88 > Y)
+            if (point.Y < pointA.Y && point.Y > Y)
             {
                 if (point.X <= X)
                 {
                     var ratio = (X - pointA.X) / h;
-                    var diff = pointA.Y - (point.Y + 88);
+                    var diff = pointA.Y - (point.Y);
                     result = pointA.X + (diff * ratio) <= point.X;
 
                     if (result && pointB.X < X)
                     {
-                        var diff2 = (point.Y + 88) - Y;
+                        var diff2 = (point.Y) - Y;
                         var ratio2 = (X - pointB.X) / h;
                         result = X - (diff2 * ratio2) >= point.X;
                         return result;
@@ -108,12 +108,12 @@ namespace Shapes
                 else if (point.X >= X)
                 {
                     var ratio = (pointB.X - X) / h;
-                    var diff = pointB.Y - (point.Y + 88);
+                    var diff = pointB.Y - (point.Y);
                     result = pointB.X - (diff * ratio) >= point.X;
 
                     if (result && pointA.X > X)
                     {
-                        var diff2 = (point.Y + 88) - Y;
+                        var diff2 = (point.Y) - Y;
                         var ratio2 = (pointA.X - X) / h;
                         result = X + (diff2 * ratio2) <= point.X;
                         return result;

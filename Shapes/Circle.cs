@@ -36,7 +36,7 @@ namespace Shapes
         {
             return
                 X <= point.X && point.X <= X + firstSide &&
-                Y <= point.Y + 88 && point.Y + 88 <= Y + firstSide;
+                Y <= point.Y && point.Y <= Y + firstSide;
         }
     }
 }

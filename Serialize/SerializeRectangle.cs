@@ -36,6 +36,7 @@ namespace Serialization
                     Shapes.Rectangle rectangle = new Shapes.Rectangle(float.Parse(shape[8]), 
                         float.Parse(shape[10]), float.Parse(shape[4]), float.Parse(shape[6]), 
                         int.Parse(shape[2]), Color.FromName(shape[13]).Name);
+
                     Shapes.Add(rectangle);
                 }
             }

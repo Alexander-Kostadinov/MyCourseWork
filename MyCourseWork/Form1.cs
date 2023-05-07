@@ -36,251 +36,255 @@ namespace MyCourseWork
             CurrentID = 0;
             ShapeType = string.Empty;
             Color = Color.Transparent;
-            Pen = new Pen(Color.Black, 2);
+            Pen = new Pen(Color.Black, 3);
             Shapes = new List<IDrawable>();
             UndoCommands = new List<ICommand>();
             RedoCommands = new List<ICommand>();
             Serializables = new List<ISerializable>();
-        }
-
-        private void Panel1_Paint(object sender, PaintEventArgs e, float x, float y)
-        {
-            y += panel1.Location.Y;
-            Color = Color.Transparent;
-
-            try
-            {
-                switch (ShapeType)
-                {
-                    case "Circle":
-                        ID++;
-                        var circle = new Circle(float.Parse(textBox1.Text), x, y, ID, Color.ToArgb().ToString());
-                        Add = new Add(circle, Shapes);
-                        Add.Execute();
-                        UndoCommands.Add(Add);
-                        RedoCommands.Clear();
-                        break;
-
-                    case "Triangle":
-                        ID++;
-                        var triangle = new Triangle(float.Parse(textBox4.Text),
-                            float.Parse(textBox6.Text), float.Parse(textBox5.Text), x, y, ID, Color.ToArgb().ToString());
-                        Add = new Add(triangle, Shapes);
-                        Add.Execute();
-                        UndoCommands.Add(Add);
-                        RedoCommands.Clear();
-                        break;
-
-                    case "Rectangle":
-                        ID++;
-                        var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
-                            float.Parse(textBox3.Text), x, y, ID, Color.ToArgb().ToString());
-                        Add = new Add(rectangle, Shapes);
-                        Add.Execute();
-                        UndoCommands.Add(Add);
-                        RedoCommands.Clear();
-                        break;
-
-                    default:
-                        break;
-                }
-
-                Refresh();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, Validate());
         }
 
         private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
         {
             var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
 
-            if (selected == null)
+            if (selected != null && selected.Color != flowLayoutPanel1.BackColor.ToArgb().ToString())
             {
-                return;
+                Fill = new Fill(selected, Shapes, flowLayoutPanel1.BackColor);
+                Fill.Execute();
+                UndoCommands.Add(Fill);
+                RedoCommands.Clear();
+                panel1.Invalidate();
             }
-
-            if (selected.Color == flowLayoutPanel1.BackColor.ToArgb().ToString())
-            {
-                return;
-            }
-
-            Fill = new Fill(selected, Shapes, flowLayoutPanel1.BackColor);
-            Fill.Execute();
-            UndoCommands.Add(Fill);
-            RedoCommands.Clear();
-            Refresh();
         }
 
         private void panel1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            base.OnMouseDoubleClick(e);
-
-            switch (e.Button)
+            if (e.Button == MouseButtons.Left)
             {
-                case MouseButtons.Left:
+                try
+                {
+                    switch (ShapeType)
+                    {
+                        case "Circle":
+                            ID++;
+                            var circle = new Circle(float.Parse(textBox1.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
+                            Add = new Add(circle, Shapes);
+                            Add.Execute();
+                            UndoCommands.Add(Add);
+                            RedoCommands.Clear();
+                            break;
 
-                    Panel1_Paint(sender,
-                new PaintEventArgs(panel1.CreateGraphics(),
-                new System.Drawing.Rectangle(new System.Drawing.Point(panel1.Location.X, panel1.Location.Y),
-                new Size(panel1.Width, panel1.Height))), e.Location.X, e.Location.Y);
-                    break;
+                        case "Triangle":
+                            ID++;
+                            var triangle = new Triangle(float.Parse(textBox4.Text),
+                                float.Parse(textBox6.Text), float.Parse(textBox5.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
+                            Add = new Add(triangle, Shapes);
+                            Add.Execute();
+                            UndoCommands.Add(Add);
+                            RedoCommands.Clear();
+                            break;
 
-                default:
-                    break;
+                        case "Rectangle":
+                            ID++;
+                            var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
+                                float.Parse(textBox3.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
+                            Add = new Add(rectangle, Shapes);
+                            Add.Execute();
+                            UndoCommands.Add(Add);
+                            RedoCommands.Clear();
+                            break;
+                    }
+
+                    panel1.Invalidate();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
-
-            Refresh();
         }
 
         private void panel1_MouseClick(object sender, MouseEventArgs e)
         {
-            base.OnMouseClick(e);
-
-            switch (e.Button)
+            if (e.Button == MouseButtons.Left)
             {
-                case MouseButtons.Left:
+                var point = new Shapes.Point(e.Location.X, e.Location.Y);
 
-                    var point = new Shapes.Point(e.Location.X, e.Location.Y);
+                var selected = Shapes.Where(x => x.Contains(point)).LastOrDefault();
 
-                    var selected = Shapes.Where(x => x.Contains(point)).LastOrDefault();
+                if (selected == null)
+                {
+                    return;
+                }
 
-                    if (selected == null)
-                    {
-                        return;
-                    }
+                var unselect = Shapes.Where(x => x.ID < 0).FirstOrDefault();
 
-                    var unselect = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+                if (unselect != null && unselect.ID != selected.ID)
+                {
+                    unselect.ID *= -1;
+                }
 
-                    if (unselect != null && unselect.ID != selected.ID)
-                    {
-                        unselect.ID *= -1;
-                    }
+                selected.ID *= -1;
 
-                    selected.ID *= -1;
+                var type = selected.GetType().Name;
 
-                    var type = selected.GetType().Name;
+                switch (type)
+                {
+                    case "Circle":
+                        textBox1.Text = selected.FirstSide.ToString();
+                        break;
+                    case "Rectangle":
+                        textBox2.Text = selected.FirstSide.ToString();
+                        textBox3.Text = selected.SecondSide.ToString();
+                        break;
+                    case "Triangle":
+                        textBox4.Text = selected.FirstSide.ToString();
+                        textBox6.Text = selected.SecondSide.ToString();
+                        textBox5.Text = selected.ThirdSide.ToString();
+                        break;
+                    default:
+                        break;
+                }
 
-                    switch (type)
-                    {
-                        case "Circle":
-                            textBox1.Text = selected.FirstSide.ToString();
-                            break;
-                        case "Rectangle":
-                            textBox2.Text = selected.FirstSide.ToString();
-                            textBox3.Text = selected.SecondSide.ToString();
-                            break;
-                        case "Triangle":
-                            textBox4.Text = selected.FirstSide.ToString();
-                            textBox6.Text = selected.SecondSide.ToString();
-                            textBox5.Text = selected.ThirdSide.ToString();
-                            break;
-                        default:
-                            break;
-                    }
+                textBox7.Text = selected.Perimeter.ToString();
+                textBox8.Text = selected.Surface.ToString();
 
-                    textBox7.Text = selected.Perimeter.ToString();
-                    textBox8.Text = selected.Surface.ToString();
-
-                    Refresh();
-                    break;
-
-                default:
-                    break;
+                panel1.Invalidate();
             }
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
-            base.OnMouseDown(e);
-
-            switch (e.Button)
+            if (e.Button == MouseButtons.Right)
             {
-                case MouseButtons.Right:
+                var point = new Shapes.Point(e.Location.X, e.Location.Y);
+                var shape = Shapes.Where(x => x.Contains(point)).LastOrDefault();
 
-                    var point = new Shapes.Point(e.Location.X, e.Location.Y);
-                    var shape = Shapes.Where(x => x.Contains(point)).LastOrDefault();
-
-                    if (shape == null)
-                    {
-                        return;
-                    }
-
+                if (shape != null)
+                {
                     Moving = new Moving(shape, Shapes, (int)shape.X, (int)shape.Y);
                     CurrentID = shape.ID;
                     shape.ID = 0;
-                    break;
+                }
             }
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
-            base.OnMouseMove(e);
-
-            if (Shapes.Count() == 0)
+            if (e.Button == MouseButtons.Right)
             {
-                return;
+                var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
+
+                if (shape != null)
+                {
+                    var type = shape.GetType().Name;
+
+                    switch (type)
+                    {
+                        case "Circle":
+                            shape.X = e.X - (shape.FirstSide / 2);
+                            shape.Y = e.Y - (shape.FirstSide / 2);
+                            break;
+                        case "Rectangle":
+                            shape.X = e.X - (shape.FirstSide / 2);
+                            shape.Y = e.Y - (shape.SecondSide / 2);
+                            break;
+                        case "Triangle":
+                            var h = 2 * shape.Surface / shape.ThirdSide;
+                            if (shape.FirstSide > shape.SecondSide && shape.FirstSide > shape.ThirdSide)
+                            {
+                                shape.X = e.X - (shape.ThirdSide / 2);
+                            }
+                            else if (shape.SecondSide > shape.FirstSide && shape.SecondSide > shape.ThirdSide)
+                            {
+                                shape.X = e.X + (shape.ThirdSide / 2);
+                            }
+                            else
+                            {
+                                shape.X = e.X;
+                            }
+                            shape.Y = e.Y - ((float)h / 2);
+                            break;
+                    }
+
+                    panel1.Invalidate();
+                }
             }
-
-            var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
-
-            if (shape == null)
-            {
-                return;
-            }
-
-            if (e.Location.Y + 88 >= panel1.Location.Y)
-            {
-                shape.X = e.Location.X;
-                shape.Y = e.Location.Y + 88;
-            }
-
-            Refresh();
         }
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            base.OnMouseUp(e);
-
-            switch (e.Button)
+            if (e.Button == MouseButtons.Right)
             {
-                case MouseButtons.Right:
-                    var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
+                var shape = Shapes.Where(x => x.ID == 0).FirstOrDefault();
 
-                    if (shape == null)
-                    {
-                        return;
-                    }
+                if (shape == null)
+                {
+                    return;
+                }
 
-                    shape.ID = CurrentID;
-                    CurrentID = 0;
+                shape.ID = CurrentID;
+                CurrentID = 0;
 
-                    if (shape.X == Moving.X && shape.Y == Moving.Y)
-                    {
-                        return;
-                    }
+                if (shape.X == Moving.X && shape.Y == Moving.Y)
+                {
+                    return;
+                }
 
-                    Moving.X = e.X;
-                    Moving.Y = e.Y + 88;
-                    Moving.Execute();
-                    UndoCommands.Add(Moving);
-                    RedoCommands.Clear();
-                    Refresh();
-                    break;
+                var type = shape.GetType().Name;
 
-                default:
-                    break;
+                switch (type)
+                {
+                    case "Circle":
+                        Moving.X = e.X - (int)(shape.FirstSide / 2);
+                        Moving.Y = e.Y - (int)(shape.FirstSide / 2);
+                        break;
+                    case "Rectangle":
+                        Moving.X = e.X - (int)(shape.FirstSide / 2);
+                        Moving.Y = e.Y - (int)(shape.SecondSide / 2);
+                        break;
+                    case "Triangle":
+                        var h = 2 * shape.Surface / shape.ThirdSide;
+                        if (shape.FirstSide > shape.SecondSide && shape.FirstSide > shape.ThirdSide)
+                        {
+                            Moving.X = e.X - (int)(shape.ThirdSide / 2);
+                        }
+                        else if (shape.SecondSide > shape.FirstSide && shape.SecondSide > shape.ThirdSide)
+                        {
+                            Moving.X = e.X + (int)(shape.ThirdSide / 2);
+                        }
+                        else
+                        {
+                            Moving.X = e.X;
+                        }
+                        Moving.Y = e.Y - (int)((float)h / 2);
+                        break;
+                }
+
+                Moving.Execute();
+                UndoCommands.Add(Moving);
+                RedoCommands.Clear();
+                panel1.Invalidate();
             }
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            base.OnPaint(e);
+            var moving = Shapes.Where(x => x.ID == 0).FirstOrDefault();
+            var isMoving = Shapes.Contains(moving);
 
             foreach (var shape in Shapes)
             {
+                if (isMoving && shape != moving)
+                {
+                    continue;
+                }
+                else if (shape.ID < 0)
+                {
+                    Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                }
+
                 Color = ColorTranslator.FromHtml(shape.Color);
 
                 var type = shape.GetType().Name;
@@ -288,29 +292,16 @@ namespace MyCourseWork
                 switch (type)
                 {
                     case "Circle":
-                        if (shape.ID < 0)
-                        {
-                            Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                        }
                         e.Graphics.DrawEllipse(Pen, shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
                         e.Graphics.FillEllipse(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
                         break;
 
                     case "Rectangle":
-                        if (shape.ID < 0)
-                        {
-                            Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                        }
                         e.Graphics.DrawRectangle(Pen, shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
                         e.Graphics.FillRectangle(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
                         break;
 
                     case "Triangle":
-                        if (shape.ID < 0)
-                        {
-                            Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                        }
-
                         var points = shape.GetPoints(shape.X, shape.Y);
                         var pointsF = new PointF[3];
                         pointsF[0] = new PointF(points[0].X, points[0].Y);
@@ -320,12 +311,9 @@ namespace MyCourseWork
                         e.Graphics.DrawPolygon(Pen, pointsF);
                         e.Graphics.FillPolygon(new SolidBrush(Color), pointsF);
                         break;
-
-                    default:
-                        break;
                 }
 
-                Pen = new Pen(Color.Black, 2);
+                Pen = new Pen(Color.Black, 3);
             }
         }
 
@@ -348,7 +336,6 @@ namespace MyCourseWork
                 textBox8.Text = string.Empty;
                 flowLayoutPanel1.BackColor = Color.Transparent;
                 panel1.CreateGraphics().Clear(DefaultBackColor);
-
                 Refresh();
             }
         }
@@ -366,7 +353,7 @@ namespace MyCourseWork
 
             UndoCommands.Add(command);
             RedoCommands.Remove(command);
-            Refresh();
+            panel1.Invalidate();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -380,9 +367,14 @@ namespace MyCourseWork
 
             command.UndoExecute();
 
+            if (command.GetType().Name == "Remove")
+            {
+                ID++;
+            }
+
             RedoCommands.Add(command);
             UndoCommands.Remove(command);
-            Refresh();
+            panel1.Invalidate();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -399,7 +391,7 @@ namespace MyCourseWork
             Remove.Execute();
             UndoCommands.Add(Remove);
             RedoCommands.Clear();
-            Refresh();
+            panel1.Invalidate();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -407,7 +399,7 @@ namespace MyCourseWork
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
                 flowLayoutPanel1.BackColor = colorDialog1.Color;
-                Refresh();
+                flowLayoutPanel1.Invalidate();
             }
         }
 
@@ -473,25 +465,36 @@ namespace MyCourseWork
                     Serializables.Add(triangles);
                     Serializables.Add(rectangles);
 
+
                     foreach (var shape in Serializables)
                     {
                         shape.Deserialize();
                     }
 
+                    var ids = Shapes.Select(x => x.ID).ToList();
+                    var newIDs = serialized.Select(x => x.ID).ToArray();
+                    var equals = ids.Where(x => newIDs.Where(y => y == x).Count() > 0).ToArray();
+
                     foreach (var shape in serialized)
                     {
+                        if (equals.Contains(shape.ID))
+                        {
+                            shape.ID = ids.Concat(newIDs).OrderByDescending(x => x).FirstOrDefault() + 1;
+                            ids.Add(shape.ID);
+                            ID = shape.ID;
+                        }
+
                         Shapes.Add(shape);
                     }
 
                     serialized.Clear();
                     Serializables.Clear();
 
-                    Refresh();
                     reader.Close();
+                    panel1.Invalidate();
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show("Error: " + ex.Message);
                 }
             }

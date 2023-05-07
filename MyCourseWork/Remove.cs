@@ -1,5 +1,6 @@
 ﻿using Shapes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MyCourseWork
 {
@@ -13,6 +14,13 @@ namespace MyCourseWork
         }
         public override void UndoExecute()
         {
+            var ids = Shapes.Select(x => x.ID).ToArray();
+
+            if (ids.Contains(Shape.ID))
+            {
+                Shape.ID = ids.OrderBy(x => x).LastOrDefault() + 1;
+            }
+
             Shapes.Add(Shape);
         }
     }

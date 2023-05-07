@@ -34,6 +34,7 @@ namespace Serialization
                 {
                     var triangle = new Triangle(float.Parse(shape[8]), float.Parse(shape[10]), float.Parse(shape[12]),
                         float.Parse(shape[4]), float.Parse(shape[6]), int.Parse(shape[2]), Color.FromName(shape[14]).Name);
+
                     Shapes.Add(triangle);
                 }
             }

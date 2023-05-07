@@ -34,8 +34,8 @@
         public override bool Contains(Point point)
         {
             return
-                X <= point.X + 1 && point.X + 1 <= X + firstSide &&
-                Y <= point.Y + 88 && point.Y + 88 <= Y + secondSide;
+                X <= point.X && point.X <= X + firstSide &&
+                Y <= point.Y && point.Y <= Y + secondSide;
         }
     }
 }
