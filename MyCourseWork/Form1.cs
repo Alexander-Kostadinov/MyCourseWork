@@ -30,6 +30,10 @@ namespace MyCourseWork
 
         public Form1()
         {
+            SetStyle(ControlStyles.UserPaint, Validate());
+            SetStyle(ControlStyles.AllPaintingInWmPaint, Validate());
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, Validate());
+
             InitializeComponent();
 
             ID = 0;
@@ -41,7 +45,6 @@ namespace MyCourseWork
             UndoCommands = new List<ICommand>();
             RedoCommands = new List<ICommand>();
             Serializables = new List<ISerializable>();
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, Validate());
         }
 
         private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
@@ -96,7 +99,7 @@ namespace MyCourseWork
                             break;
                     }
 
-                    panel1.Invalidate();
+                    Invalidate();
                 }
                 catch (Exception ex)
                 {
@@ -150,7 +153,7 @@ namespace MyCourseWork
                 textBox7.Text = selected.Perimeter.ToString();
                 textBox8.Text = selected.Surface.ToString();
 
-                panel1.Invalidate();
+                Invalidate();
             }
         }
 
@@ -167,6 +170,8 @@ namespace MyCourseWork
                     CurrentID = shape.ID;
                     shape.ID = 0;
                 }
+
+                SuspendLayout();
             }
         }
 
@@ -208,7 +213,7 @@ namespace MyCourseWork
                             break;
                     }
 
-                    panel1.Invalidate();
+                    Refresh();
                 }
             }
         }
@@ -265,7 +270,8 @@ namespace MyCourseWork
                 Moving.Execute();
                 UndoCommands.Add(Moving);
                 RedoCommands.Clear();
-                panel1.Invalidate();
+                ResumeLayout();
+                Invalidate();
             }
         }
 
@@ -353,7 +359,7 @@ namespace MyCourseWork
 
             UndoCommands.Add(command);
             RedoCommands.Remove(command);
-            panel1.Invalidate();
+            Invalidate();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -374,7 +380,7 @@ namespace MyCourseWork
 
             RedoCommands.Add(command);
             UndoCommands.Remove(command);
-            panel1.Invalidate();
+            Invalidate();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -391,7 +397,7 @@ namespace MyCourseWork
             Remove.Execute();
             UndoCommands.Add(Remove);
             RedoCommands.Clear();
-            panel1.Invalidate();
+            Invalidate();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -491,7 +497,7 @@ namespace MyCourseWork
                     Serializables.Clear();
 
                     reader.Close();
-                    panel1.Invalidate();
+                    Invalidate();
                 }
                 catch (Exception ex)
                 {
