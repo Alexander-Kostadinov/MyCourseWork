@@ -30,10 +30,6 @@ namespace MyCourseWork
 
         public Form1()
         {
-            SetStyle(ControlStyles.UserPaint, Validate());
-            SetStyle(ControlStyles.AllPaintingInWmPaint, Validate());
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, Validate());
-
             InitializeComponent();
 
             ID = 0;
@@ -45,6 +41,12 @@ namespace MyCourseWork
             UndoCommands = new List<ICommand>();
             RedoCommands = new List<ICommand>();
             Serializables = new List<ISerializable>();
+
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
         }
 
         private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
@@ -57,16 +59,18 @@ namespace MyCourseWork
                 Fill.Execute();
                 UndoCommands.Add(Fill);
                 RedoCommands.Clear();
-                panel1.Invalidate();
+                Invalidate();
             }
         }
 
-        private void panel1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void Form1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 try
                 {
+                    ID = Shapes.Select(x => x.ID).OrderBy(x => x).LastOrDefault();
+
                     switch (ShapeType)
                     {
                         case "Circle":
@@ -108,7 +112,7 @@ namespace MyCourseWork
             }
         }
 
-        private void panel1_MouseClick(object sender, MouseEventArgs e)
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -157,7 +161,7 @@ namespace MyCourseWork
             }
         }
 
-        private void panel1_MouseDown(object sender, MouseEventArgs e)
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -175,7 +179,7 @@ namespace MyCourseWork
             }
         }
 
-        private void panel1_MouseMove(object sender, MouseEventArgs e)
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -213,12 +217,12 @@ namespace MyCourseWork
                             break;
                     }
 
-                    Refresh();
+                    Invalidate();
                 }
             }
         }
 
-        private void panel1_MouseUp(object sender, MouseEventArgs e)
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -275,18 +279,14 @@ namespace MyCourseWork
             }
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void OnPaint(object sender, PaintEventArgs e)
         {
             var moving = Shapes.Where(x => x.ID == 0).FirstOrDefault();
             var isMoving = Shapes.Contains(moving);
 
             foreach (var shape in Shapes)
             {
-                if (isMoving && shape != moving)
-                {
-                    continue;
-                }
-                else if (shape.ID < 0)
+                if (shape.ID < 0)
                 {
                     Pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 }
@@ -323,93 +323,7 @@ namespace MyCourseWork
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var confirmResult = MessageBox.Show("Are you sure to delete all items ?",
-                                     "Confirm Clear !", MessageBoxButtons.YesNo);
-
-            if (confirmResult == DialogResult.Yes)
-            {
-                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands, Serializables);
-                Clear.Execute();
-                textBox1.Text = string.Empty;
-                textBox2.Text = string.Empty;
-                textBox3.Text = string.Empty;
-                textBox4.Text = string.Empty;
-                textBox5.Text = string.Empty;
-                textBox6.Text = string.Empty;
-                textBox7.Text = string.Empty;
-                textBox8.Text = string.Empty;
-                flowLayoutPanel1.BackColor = Color.Transparent;
-                panel1.CreateGraphics().Clear(DefaultBackColor);
-                Refresh();
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            var command = RedoCommands.LastOrDefault();
-
-            if (command == null)
-            {
-                return;
-            }
-
-            command.Execute();
-
-            UndoCommands.Add(command);
-            RedoCommands.Remove(command);
-            Invalidate();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            var command = UndoCommands.LastOrDefault();
-
-            if (command == null)
-            {
-                return;
-            }
-
-            command.UndoExecute();
-
-            if (command.GetType().Name == "Remove")
-            {
-                ID++;
-            }
-
-            RedoCommands.Add(command);
-            UndoCommands.Remove(command);
-            Invalidate();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
-
-            if (selected == null)
-            {
-                return;
-            }
-
-            selected.ID *= -1;
-            Remove = new Remove(selected, Shapes);
-            Remove.Execute();
-            UndoCommands.Add(Remove);
-            RedoCommands.Clear();
-            Invalidate();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                flowLayoutPanel1.BackColor = colorDialog1.Color;
-                flowLayoutPanel1.Invalidate();
-            }
-        }
-
-        private void button6_Click(object sender, EventArgs e)
+        private void Button_Save(object sender, EventArgs e)
         {
             SaveFileDialog saveFile = new SaveFileDialog();
             saveFile.Filter = "*.txt|";
@@ -449,7 +363,7 @@ namespace MyCourseWork
             }
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void Button_Open(object sender, EventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "*.txt|";
@@ -478,25 +392,26 @@ namespace MyCourseWork
                     }
 
                     var ids = Shapes.Select(x => x.ID).ToList();
-                    var newIDs = serialized.Select(x => x.ID).ToArray();
-                    var equals = ids.Where(x => newIDs.Where(y => y == x).Count() > 0).ToArray();
 
                     foreach (var shape in serialized)
                     {
-                        if (equals.Contains(shape.ID))
+                        if (ids.Contains(shape.ID))
                         {
-                            shape.ID = ids.Concat(newIDs).OrderByDescending(x => x).FirstOrDefault() + 1;
+                            shape.ID = ids.Max() + 1;
                             ids.Add(shape.ID);
                             ID = shape.ID;
                         }
 
+                        ids.Add(shape.ID);
                         Shapes.Add(shape);
                     }
 
+                    ids.Clear();
                     serialized.Clear();
                     Serializables.Clear();
 
                     reader.Close();
+
                     Invalidate();
                 }
                 catch (Exception ex)
@@ -506,17 +421,98 @@ namespace MyCourseWork
             }
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void Button_Redo(object sender, EventArgs e)
+        {
+            var command = RedoCommands.LastOrDefault();
+
+            if (command == null)
+            {
+                return;
+            }
+
+            command.Execute();
+
+            UndoCommands.Add(command);
+            RedoCommands.Remove(command);
+            Invalidate();
+        }
+
+        private void Button_Undo(object sender, EventArgs e)
+        {
+            var command = UndoCommands.LastOrDefault();
+
+            if (command == null)
+            {
+                return;
+            }
+
+            command.UndoExecute();
+
+            RedoCommands.Add(command);
+            UndoCommands.Remove(command);
+            Invalidate();
+        }
+
+        private void Button_Clear(object sender, EventArgs e)
+        {
+            var confirmResult = MessageBox.Show("Are you sure to delete all items ?",
+                                     "Confirm Clear !", MessageBoxButtons.YesNo);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands, Serializables);
+                Clear.Execute();
+                textBox1.Text = string.Empty;
+                textBox2.Text = string.Empty;
+                textBox3.Text = string.Empty;
+                textBox4.Text = string.Empty;
+                textBox5.Text = string.Empty;
+                textBox6.Text = string.Empty;
+                textBox7.Text = string.Empty;
+                textBox8.Text = string.Empty;
+                flowLayoutPanel1.BackColor = Color.Transparent;
+                CreateGraphics().Clear(DefaultBackColor);
+                Refresh();
+            }
+        }
+
+        private void Button_Remove(object sender, EventArgs e)
+        {
+            var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
+
+            if (selected == null)
+            {
+                return;
+            }
+
+            selected.ID *= -1;
+            Remove = new Remove(selected, Shapes);
+            Remove.Execute();
+            UndoCommands.Add(Remove);
+            RedoCommands.Clear();
+            Invalidate();
+        }
+
+        private void Button_Colors(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                flowLayoutPanel1.BackColor = colorDialog1.Color;
+                flowLayoutPanel1.Invalidate();
+            }
+        }
+
+        private void RadioButton_Circle(object sender, EventArgs e)
         {
             ShapeType = "Circle";
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_Triangle(object sender, EventArgs e)
         {
             ShapeType = "Triangle";
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_Rectangle(object sender, EventArgs e)
         {
             ShapeType = "Rectangle";
         }

@@ -44,7 +44,6 @@ namespace MyCourseWork
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox7 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -75,7 +74,7 @@ namespace MyCourseWork
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "Circle";
             this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton_Circle);
             // 
             // radioButton2
             // 
@@ -87,7 +86,7 @@ namespace MyCourseWork
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "Triangle";
             this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton_Triangle);
             // 
             // radioButton3
             // 
@@ -99,7 +98,7 @@ namespace MyCourseWork
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "Rectangle";
             this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton_Rectangle);
             // 
             // label2
             // 
@@ -199,21 +198,6 @@ namespace MyCourseWork
             this.textBox5.Size = new System.Drawing.Size(38, 22);
             this.textBox5.TabIndex = 16;
             // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Location = new System.Drawing.Point(0, 108);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(2045, 875);
-            this.panel1.TabIndex = 17;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
-            this.panel1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDoubleClick);
-            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
-            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
-            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseUp);
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -239,7 +223,7 @@ namespace MyCourseWork
             this.button1.TabIndex = 25;
             this.button1.Text = "Clear";
             this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button_Clear);
             // 
             // button2
             // 
@@ -250,7 +234,7 @@ namespace MyCourseWork
             this.button2.TabIndex = 0;
             this.button2.Text = "Redo";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button_Redo);
             // 
             // button3
             // 
@@ -261,7 +245,7 @@ namespace MyCourseWork
             this.button3.TabIndex = 26;
             this.button3.Text = "Undo";
             this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.Button_Undo);
             // 
             // button4
             // 
@@ -272,7 +256,7 @@ namespace MyCourseWork
             this.button4.TabIndex = 27;
             this.button4.Text = "Remove";
             this.button4.UseVisualStyleBackColor = false;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.Button_Remove);
             // 
             // label7
             // 
@@ -299,7 +283,7 @@ namespace MyCourseWork
             this.button5.TabIndex = 30;
             this.button5.Text = "Colors";
             this.button5.UseVisualStyleBackColor = false;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button5.Click += new System.EventHandler(this.Button_Colors);
             // 
             // label10
             // 
@@ -329,7 +313,7 @@ namespace MyCourseWork
             this.button6.TabIndex = 34;
             this.button6.Text = "Save";
             this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.button6.Click += new System.EventHandler(this.Button_Save);
             // 
             // button7
             // 
@@ -341,7 +325,7 @@ namespace MyCourseWork
             this.button7.TabIndex = 35;
             this.button7.Text = "Open";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.button7.Click += new System.EventHandler(this.Button_Open);
             // 
             // openFileDialog1
             // 
@@ -370,7 +354,7 @@ namespace MyCourseWork
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(982, 503);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.button7);
@@ -386,7 +370,6 @@ namespace MyCourseWork
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox7);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.textBox6);
             this.Controls.Add(this.textBox4);
@@ -406,6 +389,12 @@ namespace MyCourseWork
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseClick);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDoubleClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -428,7 +417,6 @@ namespace MyCourseWork
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox textBox7;
         private System.Windows.Forms.Button button1;

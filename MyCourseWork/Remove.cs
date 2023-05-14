@@ -18,7 +18,7 @@ namespace MyCourseWork
 
             if (ids.Contains(Shape.ID))
             {
-                Shape.ID = ids.OrderBy(x => x).LastOrDefault() + 1;
+                Shape.ID = ids.OrderByDescending(x => x).FirstOrDefault() + 1;
             }
 
             Shapes.Add(Shape);
