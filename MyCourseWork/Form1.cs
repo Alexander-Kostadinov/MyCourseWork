@@ -209,7 +209,7 @@ namespace MyCourseWork
                                 shape.X = e.X;
                             }
 
-                            shape.Y = e.Y - ((float)h / 2);
+                            shape.Y = (int)(e.Y - ((float)h / 2));
                             break;
                     }
 
@@ -282,7 +282,7 @@ namespace MyCourseWork
                             Moving.X = e.X;
                         }
 
-                        Moving.Y = e.Y - (int)((float)h / 2);
+                        Moving.Y = (int)(e.Y - ((float)h / 2));
                         break;
                 }
 
