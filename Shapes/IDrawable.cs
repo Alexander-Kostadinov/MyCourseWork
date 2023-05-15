@@ -8,9 +8,6 @@
         double Surface { get; }
         double Perimeter { get; }
         string Color { get; set; }
-        float FirstSide { get; set; }
-        float SecondSide { get; set; }
-        float ThirdSide { get; set; }
 
         double CalculateSurface();
         double CalculatePerimeter();

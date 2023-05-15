@@ -7,56 +7,9 @@ namespace Shapes
         private int id;
         private float x;
         private float y;
-        protected float firstSide;
-        protected float secondSide;
-        protected float thirdSide;
+        private string color;
         protected double surface;
         protected double perimeter;
-
-        public float FirstSide
-        {
-            get => firstSide;
-
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("You should enter positive number!");
-                }
-
-                firstSide = value;
-            }
-        }
-
-        public float SecondSide
-        {
-            get => secondSide;
-
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("You should enter positive number!");
-                }
-
-                secondSide = value;
-            }
-        }
-
-        public float ThirdSide
-        {
-            get => thirdSide;
-
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("You should enter positive number!");
-                }
-
-                thirdSide = value;
-            }
-        }
 
         public int ID
         {
@@ -74,7 +27,19 @@ namespace Shapes
             set => y = value;
         }
 
-        public string Color { get; set; }
+        public string Color
+        {
+            get => color;
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentException("This color doesn't exist!");
+                }
+
+                color = value;
+            }
+        }
 
         public double Surface => Math.Round(CalculateSurface(), 2);
         public double Perimeter => Math.Round(CalculatePerimeter(), 2);

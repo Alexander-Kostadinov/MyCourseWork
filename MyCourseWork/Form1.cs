@@ -5,6 +5,7 @@ using System.Linq;
 using System.Data;
 using Serialization;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
@@ -49,33 +50,20 @@ namespace MyCourseWork
             UpdateStyles();
         }
 
-        private void flowLayoutPanel1_MouseClick(object sender, MouseEventArgs e)
-        {
-            var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
-
-            if (selected != null && selected.Color != flowLayoutPanel1.BackColor.ToArgb().ToString())
-            {
-                Fill = new Fill(selected, Shapes, flowLayoutPanel1.BackColor);
-                Fill.Execute();
-                UndoCommands.Add(Fill);
-                RedoCommands.Clear();
-                Invalidate();
-            }
-        }
-
         private void Form1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 try
                 {
+                    Color = Color.Transparent;
                     ID = Shapes.Select(x => x.ID).OrderBy(x => x).LastOrDefault();
 
                     switch (ShapeType)
                     {
                         case "Circle":
                             ID++;
-                            var circle = new Circle(float.Parse(textBox1.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
+                            var circle = new Circle(float.Parse(toolStripTextBox2.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
                             Add = new Add(circle, Shapes);
                             Add.Execute();
                             UndoCommands.Add(Add);
@@ -84,8 +72,9 @@ namespace MyCourseWork
 
                         case "Triangle":
                             ID++;
-                            var triangle = new Triangle(float.Parse(textBox4.Text),
-                                float.Parse(textBox6.Text), float.Parse(textBox5.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
+                            var triangle = new Triangle(float.Parse(toolStripTextBox4.Text),
+                                float.Parse(toolStripTextBox6.Text), 
+                                float.Parse(toolStripTextBox8.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
                             Add = new Add(triangle, Shapes);
                             Add.Execute();
                             UndoCommands.Add(Add);
@@ -94,8 +83,8 @@ namespace MyCourseWork
 
                         case "Rectangle":
                             ID++;
-                            var rectangle = new Shapes.Rectangle(float.Parse(textBox2.Text),
-                                float.Parse(textBox3.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
+                            var rectangle = new Shapes.Rectangle(float.Parse(toolStripTextBox10.Text),
+                                float.Parse(toolStripTextBox12.Text), e.X, e.Y, ID, Color.ToArgb().ToString());
                             Add = new Add(rectangle, Shapes);
                             Add.Execute();
                             UndoCommands.Add(Add);
@@ -134,29 +123,6 @@ namespace MyCourseWork
 
                 selected.ID *= -1;
 
-                var type = selected.GetType().Name;
-
-                switch (type)
-                {
-                    case "Circle":
-                        textBox1.Text = selected.FirstSide.ToString();
-                        break;
-                    case "Rectangle":
-                        textBox2.Text = selected.FirstSide.ToString();
-                        textBox3.Text = selected.SecondSide.ToString();
-                        break;
-                    case "Triangle":
-                        textBox4.Text = selected.FirstSide.ToString();
-                        textBox6.Text = selected.SecondSide.ToString();
-                        textBox5.Text = selected.ThirdSide.ToString();
-                        break;
-                    default:
-                        break;
-                }
-
-                textBox7.Text = selected.Perimeter.ToString();
-                textBox8.Text = selected.Surface.ToString();
-
                 Invalidate();
             }
         }
@@ -187,32 +153,51 @@ namespace MyCourseWork
 
                 if (shape != null)
                 {
-                    var type = shape.GetType().Name;
+                    var type = shape.GetType();
 
-                    switch (type)
+                    switch (type.Name)
                     {
                         case "Circle":
-                            shape.X = e.X - (shape.FirstSide / 2);
-                            shape.Y = e.Y - (shape.FirstSide / 2);
+                            var r = type.GetField("radius", BindingFlags.Instance | BindingFlags.NonPublic).
+                                GetValue(shape).ToString();
+
+                            shape.X = e.X - (int.Parse(r) / 2);
+                            shape.Y = e.Y - (int.Parse(r) / 2);
                             break;
+
                         case "Rectangle":
-                            shape.X = e.X - (shape.FirstSide / 2);
-                            shape.Y = e.Y - (shape.SecondSide / 2);
+                            var recA = type.GetField("a", BindingFlags.Instance | BindingFlags.NonPublic).
+                                GetValue(shape).ToString();
+                            var recB = type.GetField("b", BindingFlags.Instance | BindingFlags.NonPublic).
+                                GetValue(shape).ToString();
+
+                            shape.X = e.X - (int.Parse(recA) / 2);
+                            shape.Y = e.Y - (int.Parse(recB) / 2);
                             break;
+
                         case "Triangle":
-                            var h = 2 * shape.Surface / shape.ThirdSide;
-                            if (shape.FirstSide > shape.SecondSide && shape.FirstSide > shape.ThirdSide)
+                            var a = type.GetField("a", BindingFlags.Instance | BindingFlags.NonPublic).
+                                GetValue(shape).ToString();
+                            var b = type.GetField("b", BindingFlags.Instance | BindingFlags.NonPublic).
+                                GetValue(shape).ToString();
+                            var c = type.GetField("c", BindingFlags.Instance | BindingFlags.NonPublic).
+                                GetValue(shape).ToString();
+
+                            var h = 2 * shape.Surface / int.Parse(c);
+
+                            if (int.Parse(a) > int.Parse(b) && int.Parse(a) > int.Parse(c))
                             {
-                                shape.X = e.X - (shape.ThirdSide / 2);
+                                shape.X = e.X - (int.Parse(c) / 2);
                             }
-                            else if (shape.SecondSide > shape.FirstSide && shape.SecondSide > shape.ThirdSide)
+                            else if (int.Parse(b) > int.Parse(a) && int.Parse(b) > int.Parse(c))
                             {
-                                shape.X = e.X + (shape.ThirdSide / 2);
+                                shape.X = e.X + (int.Parse(c) / 2);
                             }
                             else
                             {
                                 shape.X = e.X;
                             }
+
                             shape.Y = e.Y - ((float)h / 2);
                             break;
                     }
@@ -241,32 +226,51 @@ namespace MyCourseWork
                     return;
                 }
 
-                var type = shape.GetType().Name;
+                var type = shape.GetType();
 
-                switch (type)
+                switch (type.Name)
                 {
                     case "Circle":
-                        Moving.X = e.X - (int)(shape.FirstSide / 2);
-                        Moving.Y = e.Y - (int)(shape.FirstSide / 2);
+                        var r = type.GetField("radius", BindingFlags.Instance | BindingFlags.NonPublic).
+                            GetValue(shape).ToString();
+
+                        Moving.X = e.X - (int.Parse(r) / 2);
+                        Moving.Y = e.Y - (int.Parse(r) / 2);
                         break;
+
                     case "Rectangle":
-                        Moving.X = e.X - (int)(shape.FirstSide / 2);
-                        Moving.Y = e.Y - (int)(shape.SecondSide / 2);
+                        var recA = type.GetField("a", BindingFlags.Instance | BindingFlags.NonPublic).
+                            GetValue(shape).ToString();
+                        var recB = type.GetField("b", BindingFlags.Instance | BindingFlags.NonPublic).
+                            GetValue(shape).ToString();
+
+                        Moving.X = e.X - (int.Parse(recA) / 2);
+                        Moving.Y = e.Y - (int.Parse(recB) / 2);
                         break;
+
                     case "Triangle":
-                        var h = 2 * shape.Surface / shape.ThirdSide;
-                        if (shape.FirstSide > shape.SecondSide && shape.FirstSide > shape.ThirdSide)
+                        var a = type.GetField("a", BindingFlags.Instance | BindingFlags.NonPublic).
+                            GetValue(shape).ToString();
+                        var b = type.GetField("b", BindingFlags.Instance | BindingFlags.NonPublic).
+                            GetValue(shape).ToString();
+                        var c = type.GetField("c", BindingFlags.Instance | BindingFlags.NonPublic).
+                            GetValue(shape).ToString();
+
+                        var h = 2 * shape.Surface / int.Parse(c);
+
+                        if (int.Parse(a) > int.Parse(b) && int.Parse(a) > int.Parse(c))
                         {
-                            Moving.X = e.X - (int)(shape.ThirdSide / 2);
+                            Moving.X = e.X - (int.Parse(c) / 2);
                         }
-                        else if (shape.SecondSide > shape.FirstSide && shape.SecondSide > shape.ThirdSide)
+                        else if (int.Parse(b) > int.Parse(a) && int.Parse(b) > int.Parse(c))
                         {
-                            Moving.X = e.X + (int)(shape.ThirdSide / 2);
+                            Moving.X = e.X + (int.Parse(c) / 2);
                         }
                         else
                         {
                             Moving.X = e.X;
                         }
+
                         Moving.Y = e.Y - (int)((float)h / 2);
                         break;
                 }
@@ -298,13 +302,31 @@ namespace MyCourseWork
                 switch (type)
                 {
                     case "Circle":
-                        e.Graphics.DrawEllipse(Pen, shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
-                        e.Graphics.FillEllipse(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.FirstSide);
+                        var pointsCir = shape.GetPoints(shape.X, shape.Y);
+                        var pointsCirF = new PointF[4];
+                        pointsCirF[0] = new PointF(pointsCir[0].X, pointsCir[0].Y);
+                        pointsCirF[1] = new PointF(pointsCir[1].X, pointsCir[1].Y);
+                        pointsCirF[2] = new PointF(pointsCir[2].X, pointsCir[2].Y);
+                        pointsCirF[3] = new PointF(pointsCir[3].X, pointsCir[3].Y);
+
+                        var width = pointsCir[1].X - shape.X;
+                        var height = pointsCir[3].Y - shape.Y;
+
+                        e.Graphics.DrawEllipse(Pen, shape.X, shape.Y, width, height);
+                        e.Graphics.FillEllipse(new SolidBrush(Color), shape.X, shape.Y, width, height);
+
                         break;
 
                     case "Rectangle":
-                        e.Graphics.DrawRectangle(Pen, shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
-                        e.Graphics.FillRectangle(new SolidBrush(Color), shape.X, shape.Y, shape.FirstSide, shape.SecondSide);
+                        var pointsRec = shape.GetPoints(shape.X, shape.Y);
+                        var pointsRecF = new PointF[4];
+                        pointsRecF[0] = new PointF(pointsRec[0].X, pointsRec[0].Y);
+                        pointsRecF[1] = new PointF(pointsRec[1].X, pointsRec[1].Y);
+                        pointsRecF[2] = new PointF(pointsRec[2].X, pointsRec[2].Y);
+                        pointsRecF[3] = new PointF(pointsRec[3].X, pointsRec[3].Y);
+
+                        e.Graphics.DrawPolygon(Pen, pointsRecF);
+                        e.Graphics.FillPolygon(new SolidBrush(Color), pointsRecF);
                         break;
 
                     case "Triangle":
@@ -323,49 +345,10 @@ namespace MyCourseWork
             }
         }
 
-        private void Button_Save(object sender, EventArgs e)
-        {
-            SaveFileDialog saveFile = new SaveFileDialog();
-            saveFile.Filter = "*.txt|";
-
-            if (saveFile.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    string docPath = Directory.GetCurrentDirectory();
-
-                    using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, saveFile.FileName)))
-                    {
-                        var circles = new SerializeCircle(Shapes, string.Empty);
-                        var triangles = new SerializeTriangle(Shapes, string.Empty);
-                        var rectangles = new SerializeRectangle(Shapes, string.Empty);
-
-                        Serializables.Add(circles);
-                        Serializables.Add(triangles);
-                        Serializables.Add(rectangles);
-
-                        foreach (var shape in Serializables)
-                        {
-                            outputFile.Write(shape.Serialize());
-                        }
-
-                        Serializables.Clear();
-                    }
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    MessageBox.Show("Directory not found.");
-                }
-                catch
-                {
-                    MessageBox.Show("Error!");
-                }
-            }
-        }
-
-        private void Button_Open(object sender, EventArgs e)
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
+
             openFile.Filter = "*.txt|";
 
             if (openFile.ShowDialog() == DialogResult.OK)
@@ -421,23 +404,64 @@ namespace MyCourseWork
             }
         }
 
-        private void Button_Redo(object sender, EventArgs e)
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var command = RedoCommands.LastOrDefault();
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.Filter = "*.txt|";
 
-            if (command == null)
+            if (saveFile.ShowDialog() == DialogResult.OK)
             {
-                return;
+                try
+                {
+                    string docPath = Directory.GetCurrentDirectory();
+
+                    using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, saveFile.FileName)))
+                    {
+                        var circles = new SerializeCircle(Shapes, string.Empty);
+                        var triangles = new SerializeTriangle(Shapes, string.Empty);
+                        var rectangles = new SerializeRectangle(Shapes, string.Empty);
+
+                        Serializables.Add(circles);
+                        Serializables.Add(triangles);
+                        Serializables.Add(rectangles);
+
+                        foreach (var shape in Serializables)
+                        {
+                            outputFile.Write(shape.Serialize());
+                        }
+
+                        Serializables.Clear();
+                    }
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    MessageBox.Show("Directory not found.");
+                }
+                catch
+                {
+                    MessageBox.Show("Error!");
+                }
             }
-
-            command.Execute();
-
-            UndoCommands.Add(command);
-            RedoCommands.Remove(command);
-            Invalidate();
         }
 
-        private void Button_Undo(object sender, EventArgs e)
+        private void ToolStripMenu_Color(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
+
+                if (selected != null && selected.Color != colorDialog1.Color.ToArgb().ToString())
+                {
+                    Fill = new Fill(selected, Shapes, colorDialog1.Color);
+                    Fill.Execute();
+                    UndoCommands.Add(Fill);
+                    RedoCommands.Clear();
+                    Invalidate();
+                }
+            }
+        }
+
+        private void ToolStripMenu_Undo(object sender, EventArgs e)
         {
             var command = UndoCommands.LastOrDefault();
 
@@ -453,30 +477,23 @@ namespace MyCourseWork
             Invalidate();
         }
 
-        private void Button_Clear(object sender, EventArgs e)
+        private void ToolStripMenu_Redo(object sender, EventArgs e)
         {
-            var confirmResult = MessageBox.Show("Are you sure to delete all items ?",
-                                     "Confirm Clear !", MessageBoxButtons.YesNo);
+            var command = RedoCommands.LastOrDefault();
 
-            if (confirmResult == DialogResult.Yes)
+            if (command == null)
             {
-                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands, Serializables);
-                Clear.Execute();
-                textBox1.Text = string.Empty;
-                textBox2.Text = string.Empty;
-                textBox3.Text = string.Empty;
-                textBox4.Text = string.Empty;
-                textBox5.Text = string.Empty;
-                textBox6.Text = string.Empty;
-                textBox7.Text = string.Empty;
-                textBox8.Text = string.Empty;
-                flowLayoutPanel1.BackColor = Color.Transparent;
-                CreateGraphics().Clear(DefaultBackColor);
-                Refresh();
+                return;
             }
+
+            command.Execute();
+
+            UndoCommands.Add(command);
+            RedoCommands.Remove(command);
+            Invalidate();
         }
 
-        private void Button_Remove(object sender, EventArgs e)
+        private void ToolStripMenu_Remove(object sender, EventArgs e)
         {
             var selected = Shapes.Where(x => x.ID < 0).LastOrDefault();
 
@@ -493,28 +510,92 @@ namespace MyCourseWork
             Invalidate();
         }
 
-        private void Button_Colors(object sender, EventArgs e)
+        private void ToolStripMenu_Clear(object sender, EventArgs e)
         {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            var confirmResult = MessageBox.Show("Are you sure to delete all items ?",
+                                     "Confirm Clear !", MessageBoxButtons.YesNo);
+
+            if (confirmResult == DialogResult.Yes)
             {
-                flowLayoutPanel1.BackColor = colorDialog1.Color;
-                flowLayoutPanel1.Invalidate();
+                Clear = new Clear(null, Shapes, UndoCommands, RedoCommands);
+                Clear.Execute();
+                toolStripTextBox2.Text = string.Empty;
+                toolStripTextBox4.Text = string.Empty;
+                toolStripTextBox6.Text = string.Empty;
+                toolStripTextBox8.Text = string.Empty;
+                toolStripTextBox10.Text = string.Empty;
+                toolStripTextBox12.Text = string.Empty;
+                circleToolStripMenuItem.Checked = false;
+                triangleToolStripMenuItem.Checked = false;
+                rectangleToolStripMenuItem.Checked = false;
+                CreateGraphics().Clear(DefaultBackColor);
+                Refresh();
             }
         }
 
-        private void RadioButton_Circle(object sender, EventArgs e)
+        private void CircleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShapeType = "Circle";
+            if (circleToolStripMenuItem.Checked == true)
+            {
+                triangleToolStripMenuItem.Checked = false;
+                rectangleToolStripMenuItem.Checked = false;
+
+                ShapeType = "Circle";
+            }
         }
 
-        private void RadioButton_Triangle(object sender, EventArgs e)
+        private void TriangleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShapeType = "Triangle";
+            if (triangleToolStripMenuItem.Checked == true)
+            {
+                circleToolStripMenuItem.Checked = false;
+                rectangleToolStripMenuItem.Checked = false;
+
+                ShapeType = "Triangle";
+            }
         }
 
-        private void RadioButton_Rectangle(object sender, EventArgs e)
+        private void RectangleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShapeType = "Rectangle";
+            if (rectangleToolStripMenuItem.Checked == true)
+            {
+                circleToolStripMenuItem.Checked = false;
+                triangleToolStripMenuItem.Checked = false;
+
+                ShapeType = "Rectangle";
+            }
+        }
+
+        private void toolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+            var selected = Shapes.Where(x => x.ID < 0).FirstOrDefault();
+
+            if (selected == null)
+            {
+                return;
+            }
+
+            var type = selected.GetType();
+
+            switch (type.Name)
+            {
+                case "Circle":
+                    MessageBox.Show($" {selected.GetType().Name}\n Radius: {type.GetProperty("Radius").GetValue(selected)}\n " +
+                        $"Surface: {selected.Surface}\n Perimeter: {selected.Perimeter}");
+                    break;
+
+                case "Triangle":
+                    MessageBox.Show($" {selected.GetType().Name}\n A: {type.GetProperty("A").GetValue(selected)}\n " +
+                        $"B: {type.GetProperty("B").GetValue(selected)}\n C: {type.GetProperty("C").GetValue(selected)}\n " +
+                        $"Surface: {selected.Surface}\n Perimeter: {selected.Perimeter}");
+                    break;
+
+                case "Rectangle":
+                    MessageBox.Show($" {selected.GetType().Name}\n A: {type.GetProperty("A").GetValue(selected)}\n " +
+                        $"B: {type.GetProperty("B").GetValue(selected)}\n Surface: {selected.Surface}\n " +
+                        $"Perimeter: {selected.Perimeter}");
+                    break;
+            }
         }
     }
 }

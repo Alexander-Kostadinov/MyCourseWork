@@ -4,13 +4,62 @@ namespace Shapes
 {
     public class Triangle : Shape
     {
+        private float a;
+        private float b;
+        private float c;
+
+        public float A
+        {
+            get => a;
+
+            private set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("The side must be positive number!");
+                }
+
+                a = value;
+            }
+        }
+
+        public float B
+        {
+            get => b;
+
+            private set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("The side must be positive number!");
+                }
+
+                b = value;
+            }
+        }
+
+        public float C
+        {
+            get => c;
+
+            private set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("The side must be positive number!");
+                }
+
+                c = value;
+            }
+        }
+
         public Triangle(float a, float b, float c, float x, float y, int id, string color) 
             : base(x, y, id, color)
         {
-            FirstSide = a;
-            SecondSide = b;
-            ThirdSide = c;
-            IsPossibleTriangle(firstSide, secondSide, thirdSide);
+            A = a;
+            B = b;
+            C = c;
+            IsPossibleTriangle(a, b, c);
         }
 
         private void IsPossibleTriangle(float a, float b, float c)
@@ -31,34 +80,34 @@ namespace Shapes
 
         public override double CalculateSurface()
         {
-            double p = (firstSide + secondSide + thirdSide) / 2;
-            surface = Math.Sqrt(p * (p - firstSide) * (p - secondSide) * (p - thirdSide));
+            double p = (a + b + c) / 2;
+            surface = Math.Sqrt(p * (p - a) * (p - b) * (p - c));
             return surface;
         }
         public override double CalculatePerimeter()
         {
-            perimeter = firstSide + secondSide + thirdSide;
+            perimeter = a + b + c;
             return perimeter;
         }
 
         public override Point[] GetPoints(float x, float y)
         {
-            var h = 2 * Surface / thirdSide;
-            var distanceToA = Math.Sqrt((secondSide * secondSide) - (h * h));
-            var distanceToB = Math.Sqrt((firstSide * firstSide) - (h * h));
+            var h = 2 * Surface / c;
+            var distanceToA = Math.Sqrt((b * b) - (h * h));
+            var distanceToB = Math.Sqrt((a * a) - (h * h));
             var pointC = new Point((int)x, (int)y);
             var pointA = new Point((int)(x - distanceToA), (int)(y + h));
             var pointB = new Point((int)(x + distanceToB), (int)(y + h));
 
-            if (firstSide > thirdSide && firstSide > secondSide)
+            if (a > c && a > b)
             {
                 pointA.X = (int)(X + distanceToA);
-                pointB.X = (int)(pointA.X + thirdSide);
+                pointB.X = (int)(pointA.X + c);
             }
-            else if (secondSide > thirdSide && secondSide > firstSide)
+            else if (b > c && b > a)
             {
                 pointB.X = (int)(X - distanceToB);
-                pointA.X = (int)(pointB.X - thirdSide);
+                pointA.X = (int)(pointB.X - c);
             }
 
             var points = new Point[] { pointA, pointB, pointC };
@@ -68,21 +117,21 @@ namespace Shapes
 
         public override bool Contains(Point point)
         {
-            var h = 2 * Surface / thirdSide;
-            var distanceToA = Math.Sqrt((secondSide * secondSide) - (h * h));
-            var distanceToB = Math.Sqrt((firstSide * firstSide) - (h * h));
+            var h = 2 * Surface / c;
+            var distanceToA = Math.Sqrt((b * b) - (h * h));
+            var distanceToB = Math.Sqrt((a * a) - (h * h));
             var pointA = new Point((int)(X - distanceToA), (int)(Y + h));
             var pointB = new Point((int)(X + distanceToB), (int)(Y + h));
 
-            if (firstSide > thirdSide && firstSide > secondSide)
+            if (a > c && a > b)
             {
                 pointA.X = (int)(X + distanceToA);
-                pointB.X = (int)(pointA.X + thirdSide);
+                pointB.X = (int)(pointA.X + c);
             }
-            else if (secondSide > thirdSide && secondSide > firstSide)
+            else if (b > c && b > a)
             {
                 pointB.X = (int)(X - distanceToB);
-                pointA.X = (int)(pointB.X - thirdSide);
+                pointA.X = (int)(pointB.X - c);
             }
 
             bool result = false;

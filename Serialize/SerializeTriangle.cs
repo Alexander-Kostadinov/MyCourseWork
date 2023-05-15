@@ -15,8 +15,13 @@ namespace Serialization
 
             foreach (var triangle in triangles)
             {
+                var type = triangle.GetType();
+                var a = type.GetProperty("A").GetValue(triangle);
+                var b = type.GetProperty("B").GetValue(triangle);
+                var c = type.GetProperty("C").GetValue(triangle);
+
                 Text += $"Triangle Id: {triangle.ID} X: {triangle.X} Y: {triangle.Y} " +
-                    $"A: {triangle.FirstSide} B: {triangle.SecondSide} C: {triangle.ThirdSide} Color: {triangle.Color}\n";
+                    $"A: {a} B: {b} C: {c} Color: {triangle.Color}\n";
             }
 
             return Text;

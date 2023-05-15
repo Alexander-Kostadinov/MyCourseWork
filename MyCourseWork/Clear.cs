@@ -1,6 +1,5 @@
 ﻿using System;
 using Shapes;
-using Serialization;
 using System.Collections.Generic;
 
 namespace MyCourseWork
@@ -9,15 +8,13 @@ namespace MyCourseWork
     {
         private List<ICommand> UndoCommands { get; set; }
         private List<ICommand> RedoCommands { get; set; }
-        private List<ISerializable> Serializables { get; set; }
 
         public Clear(IDrawable shape, List<IDrawable> shapes, 
-            List<ICommand> undoCommands, List<ICommand> redoCommands, List<ISerializable> serializables) 
+            List<ICommand> undoCommands, List<ICommand> redoCommands) 
             : base(shape, shapes)
         {
             UndoCommands = undoCommands;
             RedoCommands = redoCommands;
-            Serializables = serializables;
         }
 
         public override void Execute()
@@ -25,7 +22,6 @@ namespace MyCourseWork
             Shapes.Clear();
             UndoCommands.Clear();
             RedoCommands.Clear();
-            Serializables.Clear();
         }
         public override void UndoExecute()
         {

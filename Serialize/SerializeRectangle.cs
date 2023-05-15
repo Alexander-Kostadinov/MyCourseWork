@@ -15,8 +15,12 @@ namespace Serialization
 
             foreach (var rectangle in rectangles)
             {
+                var type = rectangle.GetType();
+                var a = type.GetProperty("A").GetValue(rectangle);
+                var b = type.GetProperty("B").GetValue(rectangle);
+
                 Text += $"Rectangle Id: {rectangle.ID} X: {rectangle.X} Y: {rectangle.Y} " +
-                    $"A: {rectangle.FirstSide} B: {rectangle.SecondSide}  Color: {rectangle.Color}\n";
+                    $"A: {a} B: {b}  Color: {rectangle.Color}\n";
             }
 
             return Text;

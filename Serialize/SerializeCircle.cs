@@ -15,8 +15,11 @@ namespace Serialization
 
             foreach (var circle in circles)
             {
+                var type = circle.GetType();
+                var r = type.GetProperty("Radius").GetValue(circle);
+
                 Text += $"Circle Id: " +
-                    $"{circle.ID} X: {circle.X} Y: {circle.Y} Radius: {circle.FirstSide} Color: {circle.Color}\n";
+                    $"{circle.ID} X: {circle.X} Y: {circle.Y} Radius: {r} Color: {circle.Color}\n";
             }
 
             return Text;
