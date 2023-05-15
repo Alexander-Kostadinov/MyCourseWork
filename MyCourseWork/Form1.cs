@@ -58,6 +58,11 @@ namespace MyCourseWork
                 {
                     Color = Color.Transparent;
 
+                    if (circleToolStripMenuItem.Checked == false && triangleToolStripMenuItem.Checked == false && rectangleToolStripMenuItem.Checked == false)
+                    {
+                        return;
+                    }
+
                     var IDs = Shapes.Select(x => x.ID).ToList();
 
                     if (IDs.Contains(ID + 1))
@@ -193,11 +198,11 @@ namespace MyCourseWork
 
                             if (int.Parse(a) > int.Parse(b) && int.Parse(a) > int.Parse(c))
                             {
-                                shape.X = e.X - (int.Parse(c) / 2);
+                                shape.X = e.X - (int.Parse(a) - int.Parse(c));
                             }
                             else if (int.Parse(b) > int.Parse(a) && int.Parse(b) > int.Parse(c))
                             {
-                                shape.X = e.X + (int.Parse(c) / 2);
+                                shape.X = e.X + (int.Parse(b) - int.Parse(c));
                             }
                             else
                             {
@@ -266,11 +271,11 @@ namespace MyCourseWork
 
                         if (int.Parse(a) > int.Parse(b) && int.Parse(a) > int.Parse(c))
                         {
-                            Moving.X = e.X - (int.Parse(c) / 2);
+                            Moving.X = e.X - (int.Parse(a) - int.Parse(c));
                         }
                         else if (int.Parse(b) > int.Parse(a) && int.Parse(b) > int.Parse(c))
                         {
-                            Moving.X = e.X + (int.Parse(c) / 2);
+                            Moving.X = e.X + (int.Parse(b) - int.Parse(c));
                         }
                         else
                         {

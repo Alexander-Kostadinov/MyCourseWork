@@ -7,7 +7,7 @@ namespace Serialization
     {
         protected string text;
 
-        public string Text
+        protected string Text
         {
             get => text;
             set => text = value;
