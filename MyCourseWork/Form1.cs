@@ -57,7 +57,13 @@ namespace MyCourseWork
                 try
                 {
                     Color = Color.Transparent;
-                    ID = Shapes.Select(x => x.ID).OrderBy(x => x).LastOrDefault();
+
+                    var IDs = Shapes.Select(x => x.ID).ToList();
+
+                    if (IDs.Contains(ID + 1))
+                    {
+                        ID = Shapes.Select(x => x.ID).OrderBy(x => x).LastOrDefault();
+                    }
 
                     switch (ShapeType)
                     {
@@ -285,9 +291,6 @@ namespace MyCourseWork
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            var moving = Shapes.Where(x => x.ID == 0).FirstOrDefault();
-            var isMoving = Shapes.Contains(moving);
-
             foreach (var shape in Shapes)
             {
                 if (shape.ID < 0)
@@ -368,7 +371,6 @@ namespace MyCourseWork
                     Serializables.Add(triangles);
                     Serializables.Add(rectangles);
 
-
                     foreach (var shape in Serializables)
                     {
                         shape.Deserialize();
@@ -425,11 +427,28 @@ namespace MyCourseWork
                         Serializables.Add(triangles);
                         Serializables.Add(rectangles);
 
-                        foreach (var shape in Serializables)
+                        var dictionary = new Dictionary<int, string>();
+
+                        foreach (var serializable in Serializables)
                         {
-                            outputFile.Write(shape.Serialize());
+                            var shapes = serializable.Serialize().Split('\n').ToList();
+                            shapes.RemoveAt(shapes.Count() - 1);
+
+                            foreach (var shape in shapes)
+                            {
+                                dictionary.Add(int.Parse(shape.Split(' ')[2]), shape);
+                            }
                         }
 
+                        var text = dictionary.OrderBy(x => x.Key).Select(s => s.Value).ToList();
+
+                        foreach (var line in text)
+                        {
+                            outputFile.WriteLine(line);
+                        }
+
+                        text.Clear();
+                        dictionary.Clear();
                         Serializables.Clear();
                     }
                 }

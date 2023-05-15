@@ -18,12 +18,13 @@ namespace Serialization
                 var type = circle.GetType();
                 var r = type.GetProperty("Radius").GetValue(circle);
 
-                Text += $"Circle Id: " +
+                text += $"Circle Id: " +
                     $"{circle.ID} X: {circle.X} Y: {circle.Y} Radius: {r} Color: {circle.Color}\n";
             }
 
-            return Text;
+            return text;
         }
+
         public override void Deserialize()
         {
             var lines = Text.Split('\n').ToList();

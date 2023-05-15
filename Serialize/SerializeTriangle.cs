@@ -20,12 +20,13 @@ namespace Serialization
                 var b = type.GetProperty("B").GetValue(triangle);
                 var c = type.GetProperty("C").GetValue(triangle);
 
-                Text += $"Triangle Id: {triangle.ID} X: {triangle.X} Y: {triangle.Y} " +
+                text += $"Triangle Id: {triangle.ID} X: {triangle.X} Y: {triangle.Y} " +
                     $"A: {a} B: {b} C: {c} Color: {triangle.Color}\n";
             }
 
-            return Text;
+            return text;
         }
+
         public override void Deserialize()
         {
             var lines = Text.Split('\n').ToList();

@@ -5,7 +5,13 @@ namespace Serialization
 {
     public abstract class Serializer : ISerializable
     {
-        protected string Text { get; set; }
+        protected string text;
+
+        public string Text
+        {
+            get => text;
+            set => text = value;
+        }
         protected List<IDrawable> Shapes { get; set; }
 
         protected Serializer(List<IDrawable> shapes, string text)

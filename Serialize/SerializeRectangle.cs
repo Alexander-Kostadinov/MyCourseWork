@@ -19,11 +19,11 @@ namespace Serialization
                 var a = type.GetProperty("A").GetValue(rectangle);
                 var b = type.GetProperty("B").GetValue(rectangle);
 
-                Text += $"Rectangle Id: {rectangle.ID} X: {rectangle.X} Y: {rectangle.Y} " +
+                text += $"Rectangle Id: {rectangle.ID} X: {rectangle.X} Y: {rectangle.Y} " +
                     $"A: {a} B: {b}  Color: {rectangle.Color}\n";
             }
 
-            return Text;
+            return text;
         }
 
         public override void Deserialize()
