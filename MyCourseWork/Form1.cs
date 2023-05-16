@@ -198,11 +198,15 @@ namespace MyCourseWork
 
                             if (int.Parse(a) > int.Parse(b) && int.Parse(a) > int.Parse(c))
                             {
-                                shape.X = e.X - (int.Parse(a) - int.Parse(c));
+                                var distance = Math.Sqrt((int.Parse(b) * int.Parse(b)) - (h * h));
+
+                                shape.X = e.X - (int)distance;
                             }
                             else if (int.Parse(b) > int.Parse(a) && int.Parse(b) > int.Parse(c))
                             {
-                                shape.X = e.X + (int.Parse(b) - int.Parse(c));
+                                var distance = Math.Sqrt((int.Parse(a) * int.Parse(a)) - (h * h));
+
+                                shape.X = e.X + (int)distance;
                             }
                             else
                             {
@@ -271,11 +275,15 @@ namespace MyCourseWork
 
                         if (int.Parse(a) > int.Parse(b) && int.Parse(a) > int.Parse(c))
                         {
-                            Moving.X = e.X - (int.Parse(a) - int.Parse(c));
+                            var distance = Math.Sqrt((int.Parse(b) * int.Parse(b)) - (h * h));
+
+                            Moving.X = e.X - (int)distance;
                         }
                         else if (int.Parse(b) > int.Parse(a) && int.Parse(b) > int.Parse(c))
                         {
-                            Moving.X = e.X + (int.Parse(b) - int.Parse(c));
+                            var distance = Math.Sqrt((int.Parse(a) * int.Parse(a)) - (h * h));
+
+                            Moving.X = e.X + (int)distance;
                         }
                         else
                         {
