@@ -22,6 +22,7 @@ namespace MyCourseWork
         Color Color { get; set; }
         private int ID { get; set; }
         private Pen Pen { get; set; }
+        private Brush Brush { get; set; }
         private int CurrentID { get; set; }
         private string ShapeType { get; set; }
         private List<IDrawable> Shapes { get; set; }
@@ -38,6 +39,7 @@ namespace MyCourseWork
             ShapeType = string.Empty;
             Color = Color.Transparent;
             Pen = new Pen(Color.Black, 3);
+            Brush = new SolidBrush(Color.Transparent);
             Shapes = new List<IDrawable>();
             UndoCommands = new List<ICommand>();
             RedoCommands = new List<ICommand>();
@@ -312,6 +314,7 @@ namespace MyCourseWork
                 }
 
                 Color = ColorTranslator.FromHtml(shape.Color);
+                Brush = new SolidBrush(Color);
 
                 var type = shape.GetType().Name;
 
@@ -329,7 +332,7 @@ namespace MyCourseWork
                         var height = pointsCir[3].Y - shape.Y;
 
                         e.Graphics.DrawEllipse(Pen, shape.X, shape.Y, width, height);
-                        e.Graphics.FillEllipse(new SolidBrush(Color), shape.X, shape.Y, width, height);
+                        e.Graphics.FillEllipse(Brush, shape.X, shape.Y, width, height);
 
                         break;
 
@@ -342,7 +345,7 @@ namespace MyCourseWork
                         pointsRecF[3] = new PointF(pointsRec[3].X, pointsRec[3].Y);
 
                         e.Graphics.DrawPolygon(Pen, pointsRecF);
-                        e.Graphics.FillPolygon(new SolidBrush(Color), pointsRecF);
+                        e.Graphics.FillPolygon(Brush, pointsRecF);
                         break;
 
                     case "Triangle":
@@ -353,7 +356,7 @@ namespace MyCourseWork
                         pointsF[2] = new PointF(points[2].X, points[2].Y);
 
                         e.Graphics.DrawPolygon(Pen, pointsF);
-                        e.Graphics.FillPolygon(new SolidBrush(Color), pointsF);
+                        e.Graphics.FillPolygon(Brush, pointsF);
                         break;
                 }
 
